@@ -1,1 +1,876 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Breath of Faith — Mobile-first web app (v4.7)
+       Changes in this build:
+       • Breathwork cue text is now theme-aware via CSS:
+         - Day: dark blue
+         - Night: white with black glow
+       • updateCueColor() now clears inline styles so CSS rules apply correctly
+       • Fullscreen stays removed/commented from UI & JS
+  -->
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Breath of Faith</title>
+  <meta name="description" content="A prayer, focus, and renewal companion combining breathwork, Pomodoro, and calming music." />
+  <meta name="theme-color" content="#0F1414" />
+  <link rel="preconnect" href="https://www.youtube-nocookie.com" crossorigin>
+  <link rel="preconnect" href="https://i.ytimg.com" crossorigin>
+  <style>
+    :root{
+      --soft-gold:#F5E6A1; --dusty-lavender:#C8BFE7; --olive-green:#6FAF8A; --warm-taupe:#D8CFC4;
+      --sky-blue:#6EA8FF; --slate-gray:#7D8C8C; --ivory-white:#FDF6EC;
+      --bg:#FAF8F3; --panel:#FFFFFF; --text:#2A2F2F; --muted:#4D5A5A; --border:#E9E4DA;
+      --ring:rgba(163,177,138,.55); --accent:var(--olive-green); --accent-contrast:#121512;
+      --cue-day:#1f3a78; /* dark blue for day */
+    }
+    html[data-theme="dark"]{
+      --bg:#0F1414; --panel:#171D1D; --text:#F6F6F2; --muted:#B7C1C1; --border:#2A3232;
+      --ring:rgba(163,177,138,.5); --accent:#6FAF8A; --accent-contrast:#121512;
+    }
 
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;background:var(--bg);color:var(--text);
+      font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Arial,"Apple Color Emoji","Segoe UI Emoji";
+      line-height:1.55;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
+    }
+    a{color:inherit}
+    .container{max-width:900px;margin:0 auto;padding:16px}
+
+    /* Header */
+    header.app{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;margin:8px 0 12px}
+    .title-wrap h1{margin:0;font-size:clamp(2.35rem,7vw,3.35rem)}
+    .byline{color:var(--muted);font-size:clamp(1.15rem,3.4vw,1.4rem)}
+    .brand-link{color:inherit;text-decoration:none;border-bottom:1px solid transparent;padding-bottom:1px}
+    .brand-link:hover{border-color:color-mix(in oklab, var(--olive-green), white 30%)}
+    .toggle{display:inline-flex;align-items:center;gap:.5rem}
+    .switch{position:relative;width:46px;height:26px;background:var(--panel);border:1px solid var(--border);border-radius:999px;box-shadow:inset 0 1px 0 rgba(0,0,0,.06);cursor:pointer}
+    .knob{position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:var(--soft-gold);transition:left .18s ease}
+    html[data-theme="dark"] .knob{left:23px;background:var(--sky-blue)}
+
+    /* Sections */
+    .section{background:var(--panel);border:1px solid var(--border);border-radius:20px;padding:16px;margin:12px 0;box-shadow:0 8px 28px rgba(0,0,0,.08)}
+    .section h2{margin:0 0 8px;font-size:clamp(1.05rem,3.4vw,1.5rem)}
+    .help{color:var(--muted);font-size:.95rem;margin:.5rem 0 0}
+
+    .scripture-row{display:flex;align-items:stretch;gap:8px;margin:10px 0 8px}
+    .scripture{flex:1;margin:0;padding:10px 12px;border:1px solid var(--border);border-radius:14px;background:linear-gradient(180deg, rgba(255,255,255,.02), rgba(0,0,0,.04));}
+    .scripture .ref{display:block;margin-top:4px;color:var(--muted);font-size:.92rem}
+    .scripture-nav{display:flex;gap:6px;align-items:center}
+    .icon-btn{min-width:40px;height:40px;border-radius:10px;border:1px solid var(--border);background:var(--panel);cursor:pointer;font-weight:700}
+    .icon-btn:focus-visible{outline:none;box-shadow:0 0 0 4px var(--ring)}
+
+    .controls{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0 8px}
+    @media (min-width:680px){.controls{grid-template-columns:repeat(4,1fr)}}
+
+    select.ui-select{
+      appearance:none;-webkit-appearance:none;-moz-appearance:none;
+      background:var(--panel) url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M5 7l5 6 5-6" stroke="%23b7c1c1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>') no-repeat right .6rem center;
+      background-size:20px 20px;color:var(--text);min-height:44px;border:1.5px solid color-mix(in oklab, var(--slate-gray), white 10%);
+      border-radius:12px;padding:.6rem 2rem .6rem .7rem;box-shadow:inset 0 1px 0 rgba(0,0,0,.06)
+    }
+    select.ui-select:focus{outline:none;box-shadow:0 0 0 4px var(--ring)}
+
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;min-height:44px;padding:0 14px;font-weight:600;border-radius:12px;border:1px solid transparent;cursor:pointer}
+    .btn-primary{background:var(--accent);color:var(--accent-contrast);border-color:color-mix(in oklab, var(--accent), black 12%)}
+    .btn-outline{background:transparent;color:var(--text);border-color:var(--border)}
+    .btn:focus-visible{outline:none;box-shadow:0 0 0 4px var(--ring)} .btn[disabled]{opacity:.6;cursor:not-allowed}
+
+    /* Progress bar */
+    .progress{height:22px;border-radius:999px;background:color-mix(in oklab, var(--slate-gray), white 82%);overflow:hidden;border:1px solid var(--border)}
+    html[data-theme="dark"] .progress{background:color-mix(in oklab, var(--slate-gray), black 72%)}
+    .progress>.bar{height:100%;background:linear-gradient(90deg, var(--olive-green), var(--soft-gold));width:0%;transition:width .2s linear}
+
+    /* Visual canvas area */
+    .visual-wrap{position:relative; height:360px; border-radius:16px; background:radial-gradient(120% 120% at 50% 30%, rgba(255,255,255,.06), rgba(0,0,0,.1)); border:1px solid var(--border); margin:8px 0; overflow:hidden}
+    html[data-theme="dark"] .visual-wrap{background:radial-gradient(120% 120% at 50% 30%, rgba(255,255,255,.04), rgba(0,0,0,.35))}
+    .centered{position:absolute; top:50%; left:50%; transform:translate(-50%,-50%) scale(var(--scale,1)); transform-origin:center center;}
+
+    /* Orb (colored) */
+    .visual-obj{width:210px;height:210px;border-radius:50%;
+      background:radial-gradient(circle at 30% 30%, color-mix(in oklab, var(--soft-gold), #d1b97a 18%), color-mix(in oklab, var(--sky-blue), #567bab 22%));
+      box-shadow:0 18px 60px rgba(0,0,0,.22)
+    }
+
+    /* Cruciform Cross (colored) */
+    .visual-cross{position:relative;width:240px;height:240px;filter:drop-shadow(0 10px 24px rgba(0,0,0,.28))}
+    .visual-cross::before,.visual-cross::after{
+      content:"";position:absolute;border-radius:14px;
+      background:linear-gradient(180deg,
+        color-mix(in oklab, var(--soft-gold), #d1b97a 18%),
+        color-mix(in oklab, var(--warm-taupe), #b9a98f 16%));
+      box-shadow:inset 0 0 0 1px color-mix(in oklab, #7b6a3a, black 10%);
+    }
+    html[data-theme="dark"] .visual-cross::before, html[data-theme="dark"] .visual-cross::after{
+      background:linear-gradient(180deg,
+        color-mix(in oklab, var(--soft-gold), #cba95f 10%),
+        color-mix(in oklab, var(--soft-gold), #6c5a2a 35%));
+      box-shadow:inset 0 0 0 1px color-mix(in oklab, #5d4f2b, black 20%);
+    }
+    .visual-cross::before{width:24px;height:224px;left:calc(50% - 12px);top:8px}
+    .visual-cross::after{height:24px;width:160px;left:calc(50% - 80px);top:86px;border-radius:12px}
+
+    /* Starfield (blue) */
+    .visual-stars{position:absolute;inset:0;z-index:1}
+    #starsSvg{width:100%;height:100%;display:block}
+    #starsSvg g{transform-box:fill-box;transform-origin:center}
+    .star{animation:twinkle 6s ease-in-out infinite alternate}
+    @keyframes twinkle { from { opacity:.6 } to { opacity:1 } }
+
+    /* Branches (green) */
+    #branches{position:absolute; inset:0; width:100%; height:100%; display:block; z-index:2}
+
+    /* Cue text base */
+    .cue{
+      position:absolute;inset:0;display:grid;place-items:center;
+      font-weight:900;font-size:1.18rem;text-align:center;
+      z-index:3;
+    }
+    /* Day mode: dark blue, no outline */
+    html:not([data-theme="dark"]) .cue{
+      color:var(--cue-day);
+      text-shadow:0 1px 0 rgba(255,255,255,.25);
+      -webkit-text-stroke:0;
+    }
+    /* Night mode: white text with strong black glow */
+    html[data-theme="dark"] .cue{
+      color:#fff;
+      -webkit-text-stroke:0;
+      text-shadow:
+        0 0 10px rgba(0,0,0,.95),
+        0 0 6px rgba(0,0,0,.95),
+        0 1px 0 rgba(0,0,0,.95),
+        1px 0 0 rgba(0,0,0,.95),
+        -1px 0 0 rgba(0,0,0,.95),
+        0 -1px 0 rgba(0,0,0,.95);
+    }
+
+    /* --- Fullscreen / immersive overlay rules remain commented out --- */
+
+    /* Media */
+    .media{display:grid;gap:10px;margin-top:8px}
+    .yt-frame{width:100%;height:224px;border:0;border-radius:12px;box-shadow:0 4px 14px rgba(0,0,0,.08)}
+    .media-card{display:flex;align-items:center;gap:.8rem;padding:.6rem;border:1px solid var(--border);border-radius:14px;background:linear-gradient(180deg, rgba(255,255,255,.02), rgba(0,0,0,.05));text-decoration:none;color:var(--text);box-shadow:0 4px 14px rgba(0,0,0,.08)}
+    .media-card:hover{transform:translateY(-1px);transition:transform .12s ease}
+    .media-thumb{width:48px;height:48px;border-radius:10px;flex:0 0 48px;object-fit:cover;border:1px solid var(--border)}
+    .media-meta{display:flex;flex-direction:column;line-height:1.25}
+    .media-title{font-weight:600;font-size:.95rem}
+    .media-caption{font-size:.85rem;color:var(--muted)}
+
+    /* Pomodoro state chips */
+    .chip{display:inline-flex;align-items:center;gap:.35rem;font:700 12px/1 ui-sans-serif,system-ui;padding:.35rem .6rem;border-radius:999px;border:1px solid transparent}
+    .chip-focus{background:color-mix(in oklab, var(--olive-green), white 15%);border-color:color-mix(in oklab, var(--olive-green), black 10%);color:#1c2919}
+    .chip-short{background:color-mix(in oklab, var(--dusty-lavender), white 8%);border-color:color-mix(in oklab, var(--dusty-lavender), black 12%);color:#241d2c}
+    .chip-long{background:linear-gradient(90deg, color-mix(in oklab, var(--dusty-lavender), white 15%), color-mix(in oklab, var(--soft-gold), white 10%));border-color:color-mix(in oklab, var(--soft-gold), black 12%);color:#231f17}
+
+    .subline{color:var(--muted);font-size:clamp(1rem,3.2vw,1.15rem);margin-top:4px}
+
+    /* Jump cards — gold, high contrast */
+    .jump{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+    .jump a.card{
+      display:flex;align-items:center;gap:.6rem;padding:.6rem .9rem;border-radius:12px;text-decoration:none;
+      border:1px solid color-mix(in oklab, var(--soft-gold), black 18%);
+      background:linear-gradient(180deg, color-mix(in oklab, var(--soft-gold), white 22%), color-mix(in oklab, var(--soft-gold), black 6%));
+      color:#1b160a;font-weight:700;box-shadow:0 4px 14px rgba(0,0,0,.08)
+    }
+    .jump a.card:hover{transform:translateY(-1px);transition:transform .12s ease}
+    html[data-theme="dark"] .jump a.card{
+      border-color:color-mix(in oklab, var(--soft-gold), black 40%);
+      background:linear-gradient(180deg, color-mix(in oklab, var(--soft-gold), black 30%), color-mix(in oklab, var(--soft-gold), black 55%));
+      color:var(--ivory-white)
+    }
+
+    /* Bigger, clearer Pomodoro clock */
+    #pdClock{font-size:clamp(1.9rem,8.5vw,3.6rem);font-weight:800;letter-spacing:.4px}
+
+    /* Donate card */
+    .donate{margin-top:12px}
+    .donate-card{
+      display:flex;flex-direction:column;gap:.6rem;padding:12px;
+      border:1px solid color-mix(in oklab, var(--soft-gold), black 18%);
+      border-radius:16px;
+      background:linear-gradient(180deg, color-mix(in oklab, var(--soft-gold), white 20%), color-mix(in oklab, var(--soft-gold), black 6%));
+      color:#1b160a;box-shadow:0 4px 14px rgba(0,0,0,.08)
+    }
+    html[data-theme="dark"] .donate-card{
+      border-color:color-mix(in oklab, var(--soft-gold), black 40%);
+      background:linear-gradient(180deg, color-mix(in oklab, var(--soft-gold), black 35%), color-mix(in oklab, var(--soft-gold), black 55%));
+      color:var(--ivory-white)
+    }
+    .donate-actions .btn-donate{
+      background:linear-gradient(90deg, var(--olive-green), var(--soft-gold));
+      color:var(--accent-contrast);border:1px solid color-mix(in oklab, var(--olive-green), black 10%);
+      padding:10px 14px;border-radius:12px;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:.5rem
+    }
+    .donate-actions .btn-donate:hover{transform:translateY(-1px);transition:transform .12s ease}
+
+    footer.app{text-align:center;color:var(--muted);margin:18px 0 26px}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="app" aria-label="App header">
+      <div class="title-wrap">
+        <h1>Breath of Faith</h1>
+        <div class="byline">by <a class="brand-link" href="https://www.coherencerising.com" target="_blank" rel="noopener">Coherence Rising</a></div>
+        <div class="subline">A sacred space for prayer, focus, and renewal.</div>
+        <nav class="jump" aria-label="Quick links">
+          <a class="card" href="#breathwork">Jump to Breathwork</a>
+          <a class="card" href="#pomodoro">Jump to Pomodoro</a>
+        </nav>
+      </div>
+      <div class="toggle" role="group" aria-label="Theme">
+        <span>Day</span>
+        <button id="themeToggle" class="switch" type="button" aria-pressed="false" aria-label="Toggle dark mode">
+          <span class="knob" aria-hidden="true"></span>
+        </button>
+        <span>Night</span>
+      </div>
+    </header>
+
+    <!-- ==================== BREATHWORK ==================== -->
+    <section class="section" id="breathwork" aria-labelledby="breathwork-title">
+      <h2 id="breathwork-title">Breathwork</h2>
+      <p class="help"><strong>Why breathwork?</strong> Gentle, paced breathing can calm the nervous system, reduce stress, and help you focus prayerfully. Choose a pattern that feels natural, and keep it comfortable.</p>
+      <p class="help"><strong>Box Breathing</strong> (3–3–3–3 / 4–4–4–4 / 6–6–6–6): Inhale, hold, exhale, hold — all for the same count. Good for calming and focus. Start with shorter counts (3–4); try longer (6) when comfy.</p>
+      <p class="help"><strong>Equal Inhale/Exhale</strong> (4–4 / 6–6 / 8–8): Breathe in and out for the same count. Smooth and steady; great for relaxing without the holds.</p>
+      <p class="help"><em>Tip:</em> Listen to your body. If you feel light-headed, reduce the count or pause. More breathing patterns coming soon.</p>
+
+      <!-- Scripture with Prev/Next -->
+      <div class="scripture-row">
+        <div id="bwVerse" class="scripture" aria-live="polite"></div>
+        <div class="scripture-nav">
+          <button id="bwPrev" class="icon-btn" type="button" title="Previous verse" aria-label="Previous verse">◀</button>
+          <button id="bwNext" class="icon-btn" type="button" title="Next verse" aria-label="Next verse">▶</button>
+        </div>
+      </div>
+
+      <div class="controls" aria-label="Breathwork controls">
+        <label><span>Breathing pattern</span>
+          <select id="bwPattern" class="ui-select">
+            <optgroup label="Box breathing">
+              <option value="box-3">Box 3–3–3–3</option>
+              <option value="box-4" selected>Box 4–4–4–4</option>
+              <option value="box-6">Box 6–6–6–6</option>
+            </optgroup>
+            <optgroup label="Equal inhale/exhale">
+              <option value="even-4">Equal 4–4</option>
+              <option value="even-6">Equal 6–6</option>
+              <option value="even-8">Equal 8–8</option>
+            </optgroup>
+          </select>
+        </label>
+        <label><span>Visual</span>
+          <select id="bwVisual" class="ui-select">
+            <option value="orb" selected>Orb</option>
+            <option value="cross">Cross</option>
+            <option value="starfield">Starfield (blue)</option>
+            <option value="branches">Branches (green)</option>
+          </select>
+        </label>
+        <label><span>Duration</span>
+          <select id="bwDuration" class="ui-select">
+            <option value="180">3 min</option>
+            <option value="300">5 min</option>
+            <option value="600" selected>10 min</option>
+            <option value="900">15 min</option>
+            <option value="1200">20 min</option>
+          </select>
+        </label>
+        <label><span>Music</span>
+          <select id="bwMusic" class="ui-select">
+            <option value="yt" selected>YouTube (embed)</option>
+            <option value="off">Off</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="visual-wrap" id="bwVisualWrap">
+        <!-- Fullscreen button removed -->
+        <div class="visual-stars" id="stars" hidden>
+          <svg id="starsSvg" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"></svg>
+        </div>
+        <svg id="branches" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet" hidden></svg>
+        <div class="visual-obj centered" id="orb" hidden></div>
+        <div class="visual-cross centered" id="cross" hidden></div>
+        <div class="cue" id="bwCue" aria-live="polite">Ready</div>
+      </div>
+
+      <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+        <button id="bwStart" class="btn btn-primary" type="button">Start</button>
+        <button id="bwPause" class="btn btn-outline" type="button" disabled>Pause</button>
+        <button id="bwReset" class="btn btn-outline" type="button" disabled>Reset</button>
+        <div style="flex:1 1 100%"></div>
+        <div style="min-width:200px; flex: 1 1 220px;" aria-label="Breathwork progress">
+          <div class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="Breathwork session progress">
+            <div class="bar" id="bwBar"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="media" id="bwMedia">
+        <iframe id="bwYT" class="yt-frame" loading="lazy" allow="autoplay; encrypted-media; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin" title="Breathwork playlist (YouTube)" src="https://www.youtube-nocookie.com/embed/videoseries?list=OLAK5uy_l4UsJuLqbFOSXeOzTEjw_Qfu3WyWvuxgo"></iframe>
+        <a class="media-card" href="https://open.spotify.com/album/59QgbMZznJd7gAQloXLlk0" target="_blank" rel="noopener" aria-label="Open Breathwork album on Spotify in a new tab">
+          <svg class="media-thumb" viewBox="0 0 24 24" aria-hidden="true"><rect rx="10" width="100%" height="100%" fill="#1DB954"/><path d="M6 11c4-1.5 8-1.2 12 .6M7 14c3-1 6-.8 9 .5M8 16.5c2.3-.6 4.7-.5 7 .4" stroke="#fff" stroke-width="1.6" stroke-linecap="round" fill="none"/></svg>
+          <div class="media-meta"><div class="media-title">Open in Spotify</div><div class="media-caption">Breathwork album</div></div>
+        </a>
+        <p class="help" style="margin-top:4px">These playlists were created by Coherence Rising and are recommended to accompany sessions, but you can disable them if you prefer silence.</p>
+      </div>
+    </section>
+
+    <!-- ==================== POMODORO ==================== -->
+    <section class="section" id="pomodoro" aria-labelledby="pomodoro-title">
+      <h2 id="pomodoro-title">Pomodoro</h2>
+      <p class="help"><strong>Why Pomodoro?</strong> Short, focused sprints with regular breaks help you maintain deep focus without burnout. The classic rhythm is 25 minutes of work, 5 minutes of rest, with a longer 15-minute break after four rounds.</p>
+
+    <!-- Scripture with Prev/Next -->
+      <div class="scripture-row">
+        <div id="pdVerse" class="scripture" aria-live="polite"></div>
+        <div class="scripture-nav">
+          <button id="pdPrev" class="icon-btn" type="button" title="Previous verse" aria-label="Previous verse">◀</button>
+          <button id="pdNext" class="icon-btn" type="button" title="Next verse" aria-label="Next verse">▶</button>
+        </div>
+      </div>
+
+      <div class="controls" aria-label="Pomodoro controls">
+        <label><span>Rounds</span>
+          <select id="pdRounds" class="ui-select"><option value="4" selected>4 (classic)</option><option value="6">6</option></select>
+        </label>
+        <label><span>Focus minutes</span>
+          <select id="pdFocus" class="ui-select"><option value="25" selected>25</option><option value="30">30</option><option value="45">45</option></select>
+        </label>
+        <label><span>Short break</span>
+          <select id="pdShort" class="ui-select"><option value="5" selected>5</option><option value="7">7</option><option value="10">10</option></select>
+        </label>
+        <label><span>Long break</span>
+          <select id="pdLong" class="ui-select"><option value="15" selected>15</option><option value="20">20</option></select>
+        </label>
+      </div>
+
+      <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin: 6px 0 6px;">
+        <span id="pdChip" class="chip chip-focus" aria-live="polite">Focus</span>
+        <div id="pdState" aria-live="polite">Focus 1 of 4</div>
+        <div style="flex:1 1 160px"></div>
+        <div style="font-variant-numeric: tabular-nums;" aria-live="polite"><span id="pdClock">25:00</span></div>
+      </div>
+
+      <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin: 6px 0 6px;">
+        <button id="pdStart" class="btn btn-primary" type="button">Start</button>
+        <button id="pdPause" class="btn btn-outline" type="button" disabled>Pause</button>
+        <button id="pdReset" class="btn btn-outline" type="button" disabled>Reset</button>
+        <button id="pdSkip" class="btn btn-outline" type="button" disabled>Skip break</button>
+      </div>
+
+      <div class="progress" role="progressbar" aria-label="Pomodoro progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="bar" id="pdBar"></div></div>
+
+      <div class="media" id="pdMedia">
+        <iframe id="pdYT" class="yt-frame" loading="lazy" allow="autoplay; encrypted-media; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin" title="Focus playlist (YouTube)" src="https://www.youtube-nocookie.com/embed/videoseries?list=OLAK5uy_mYQTMuHxJs17LZApCnxc0ak0E73-0jLwU"></iframe>
+        <a class="media-card" href="https://open.spotify.com/album/3lL4wCD0MDpEW2C3wf1DZH" target="_blank" rel="noopener" aria-label="Open Focus album on Spotify in a new tab">
+          <svg class="media-thumb" viewBox="0 0 24 24" aria-hidden="true"><rect rx="10" width="100%" height="100%" fill="#1DB954"/><path d="M6 11c4-1.5 8-1.2 12 .6M7 14c3-1 6-.8 9 .5M8 16.5c2.3-.6 4.7-.5 7 .4" stroke="#fff" stroke-width="1.6" stroke-linecap="round" fill="none"/></svg>
+          <div class="media-meta"><div class="media-title">Open in Spotify</div><div class="media-caption">Focus album</div></div>
+        </a>
+        <p class="help" style="margin-top:4px">These playlists were created by Coherence Rising and are recommended to accompany focus sessions, but you can disable them if you prefer silence.</p>
+      </div>
+    </section>
+
+    <!-- ==================== SUPPORT / DONATE ==================== -->
+    <section class="section donate" id="support" aria-labelledby="support-title">
+      <h2 id="support-title" style="margin-bottom:.4rem">Support the Mission</h2>
+      <div class="donate-card">
+        <p class="help" style="margin:0">
+          Breath of Faith is free and continually updated to better serve others through your feedback.
+          If you’d like to support the work of <strong>Coherence Rising</strong>, your gift is deeply appreciated.
+        </p>
+        <div class="donate-actions">
+          <a class="btn-donate" href="https://paypal.me/LiviaLay" target="_blank" rel="noopener" aria-label="Donate to Coherence Rising on PayPal">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M12 20s-6-4.35-8.5-7.08C1.51 10.71 2.1 7.5 4.6 6.2A4.2 4.2 0 0 1 9.9 7.3L12 9.2l2.1-1.9a4.2 4.2 0 0 1 5.3-1.1c2.5 1.3 3.1 4.51 1.1 6.72C18 15.65 12 20 12 20Z" stroke="currentColor" stroke-width="1.5" fill="currentColor"/>
+            </svg>
+            Support on PayPal
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== FEEDBACK (Coming soon) ==================== -->
+    <section class="section" id="feedback" aria-labelledby="feedback-title">
+      <h2 id="feedback-title" style="display:flex;align-items:center;gap:.6rem;margin-bottom:.4rem">Feedback
+        <span class="pill" title="This feature will open soon" style="display:inline-flex;align-items:center;gap:.35rem;font:600 12px/1.2 ui-sans-serif,system-ui;padding:.32rem .6rem;border-radius:999px;background:color-mix(in oklab, var(--soft-gold), white 10%);color:#1a1a1a;border:1px solid color-mix(in oklab, var(--soft-gold), black 12%)"><svg viewBox="0 0 24 24" fill="none" width="14" height="14" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="#1a1a1a" stroke-width="1.5"/><path d="M12 7v5l3 2" stroke="#1a1a1a" stroke-width="1.5" stroke-linecap="round"/></svg>Coming soon</span>
+      </h2>
+      <p class="help">We’re building a quick feedback form. For now, you can email us at <a class="brand-link" href="mailto:hello@coherencerising.com">hello@coherencerising.com</a>.</p>
+      <p class="help" style="margin-top:.35rem"><strong>Note:</strong> By emailing feedback, you agree to be added to the Coherence Rising contact list so we can follow up and share early updates. You can unsubscribe at any time.</p>
+      <div style="margin-top:.8rem;display:flex;gap:.6rem;flex-wrap:wrap"><button class="btn btn-primary" type="button" disabled title="Feedback form is coming soon">Open feedback form</button></div>
+    </section>
+
+    <footer class="app" aria-label="Footer"><div>© <span id="year"></span> <a class="brand-link" href="https://www.coherencerising.com" target="_blank" rel="noopener">Coherence Rising</a></div></footer>
+  </div>
+
+  <script>
+    // ================= Utilities =================
+    const store={get:(k,f)=>{try{const v=localStorage.getItem(k);return v!==null?JSON.parse(v):f}catch{return f}},set:(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch{}}};
+    const clamp=(v,min,max)=>Math.min(max,Math.max(min,v));
+    const lerp=(a,b,t)=>a+(b-a)*t;
+    const ease=(t)=> 0.5 - 0.5*Math.cos(Math.PI*t);
+    const $id=(x)=>document.getElementById(x);
+    const on=(el,type,fn)=>{ if(el&&el.addEventListener){ el.addEventListener(type,fn); } };
+
+    // ================= Theme =================
+    (function(){
+      const btn=$id('themeToggle');
+      const apply=(m)=>{document.documentElement.setAttribute('data-theme',m);btn&&btn.setAttribute('aria-pressed',m==='dark'?'true':'false');store.set('theme',m); updateCueColor();};
+      const saved=store.get('theme',null); if(saved) document.documentElement.setAttribute('data-theme',saved);
+      on(btn,'click',()=>{const cur=document.documentElement.getAttribute('data-theme')==='dark'?'dark':'light';apply(cur==='dark'?'light':'dark')});
+    })();
+
+    // ================= Scripture rotation (KJV) + navigation =================
+    const SCRIPTURE_MODE = 'daily'; // 'daily' seed or 'random'
+    const daySeed = () => Math.floor(Date.now() / 86400000);
+
+    const VERSES_BREATH = [
+      {ref:'Psalm 46:10 (KJV)', text:'Be still, and know that I am God.'},
+      {ref:'John 14:27 (KJV)', text:'Peace I leave with you, my peace I give unto you... Let not your heart be troubled, neither let it be afraid.'},
+      {ref:'Philippians 4:6–7 (KJV)', text:'Be careful for nothing; but in every thing by prayer and supplication with thanksgiving let your requests be made known unto God. And the peace of God... shall keep your hearts and minds through Christ Jesus.'},
+      {ref:'Isaiah 26:3 (KJV)', text:'Thou wilt keep him in perfect peace, whose mind is stayed on thee: because he trusteth in thee.'},
+      {ref:'Matthew 11:28–29 (KJV)', text:'Come unto me, all ye that labour and are heavy laden, and I will give you rest... and ye shall find rest unto your souls.'},
+      {ref:'Psalm 62:1–2 (KJV)', text:'Truly my soul waiteth upon God: from him cometh my salvation. He only is my rock and my salvation; he is my defence; I shall not be greatly moved.'},
+      {ref:'1 Peter 5:7 (KJV)', text:'Casting all your care upon him; for he careth for you.'},
+      {ref:'Psalm 34:4 (KJV)', text:'I sought the LORD, and he heard me, and delivered me from all my fears.'},
+      {ref:'Psalm 55:22 (KJV)', text:'Cast thy burden upon the LORD, and he shall sustain thee...'},
+      {ref:'Romans 15:13 (KJV)', text:'Now the God of hope fill you with all joy and peace in believing...'},
+      {ref:'Psalm 16:11 (KJV)', text:'Thou wilt shew me the path of life: in thy presence is fulness of joy...'},
+      {ref:'Psalm 23:1–3 (KJV)', text:'The LORD is my shepherd; I shall not want. He maketh me to lie down in green pastures... he restoreth my soul.'},
+      {ref:'Psalm 27:1 (KJV)', text:'The LORD is my light and my salvation; whom shall I fear?'},
+      {ref:'Psalm 91:1–2 (KJV)', text:'He that dwelleth in the secret place of the most High shall abide under the shadow of the Almighty.'},
+      {ref:'Proverbs 3:5–6 (KJV)', text:'Trust in the LORD with all thine heart; and lean not unto thine own understanding...'},
+      {ref:'Isaiah 40:31 (KJV)', text:'They that wait upon the LORD shall renew their strength...'},
+      {ref:'Zephaniah 3:17 (KJV)', text:'The LORD thy God in the midst of thee is mighty; he will save, he will rejoice over thee with joy...'},
+      {ref:'Psalm 121:1–2 (KJV)', text:'I will lift up mine eyes unto the hills, from whence cometh my help.'},
+      {ref:'Lamentations 3:22–23 (KJV)', text:'It is of the LORD’S mercies that we are not consumed... they are new every morning.'},
+      {ref:'Psalm 19:14 (KJV)', text:'Let the words of my mouth, and the meditation of my heart, be acceptable in thy sight...'},
+      {ref:'Psalm 63:1 (KJV)', text:'O God, thou art my God; early will I seek thee...'},
+      {ref:'John 15:5 (KJV)', text:'I am the vine, ye are the branches... for without me ye can do nothing.'},
+      {ref:'Psalm 37:7 (KJV)', text:'Rest in the LORD, and wait patiently for him...'},
+      {ref:'Colossians 3:15 (KJV)', text:'Let the peace of God rule in your hearts... and be ye thankful.'},
+      {ref:'Hebrews 4:16 (KJV)', text:'Let us therefore come boldly unto the throne of grace...'},
+      {ref:'James 4:8 (KJV)', text:'Draw nigh to God, and he will draw nigh to you.'},
+      {ref:'Psalm 100:4 (KJV)', text:'Enter into his gates with thanksgiving, and into his courts with praise...'},
+      {ref:'Psalm 103:1 (KJV)', text:'Bless the LORD, O my soul: and all that is within me, bless his holy name.'},
+      {ref:'Isaiah 30:15 (KJV)', text:'In returning and rest shall ye be saved; in quietness and in confidence shall be your strength...'},
+      {ref:'Psalm 42:11 (KJV)', text:'Why art thou cast down, O my soul? hope thou in God...'},
+      {ref:'Psalm 130:5–6 (KJV)', text:'I wait for the LORD, my soul doth wait... my soul waiteth for the Lord more than they that watch for the morning.'},
+      {ref:'Psalm 86:11 (KJV)', text:'Teach me thy way, O LORD; I will walk in thy truth: unite my heart to fear thy name.'},
+      {ref:'Psalm 73:26 (KJV)', text:'My flesh and my heart faileth: but God is the strength of my heart...'},
+      {ref:'Psalm 34:8 (KJV)', text:'O taste and see that the LORD is good: blessed is the man that trusteth in him.'},
+      {ref:'Psalm 90:14 (KJV)', text:'O satisfy us early with thy mercy; that we may rejoice and be glad all our days.'},
+      {ref:'Psalm 145:18 (KJV)', text:'The LORD is nigh unto all them that call upon him, to all that call upon him in truth.'},
+      {ref:'John 16:33 (KJV)', text:'In the world ye shall have tribulation: but be of good cheer; I have overcome the world.'},
+      {ref:'2 Thessalonians 3:16 (KJV)', text:'Now the Lord of peace himself give you peace always by all means.'},
+      {ref:'Psalm 139:23–24 (KJV)', text:'Search me, O God, and know my heart... and lead me in the way everlasting.'},
+      {ref:'Psalm 32:7 (KJV)', text:'Thou art my hiding place; thou shalt preserve me from trouble...'},
+      {ref:'Exodus 33:14 (KJV)', text:'My presence shall go with thee, and I will give thee rest.'}
+    ];
+
+    const VERSES_POMO = [
+      {ref:'Colossians 3:23 (KJV)', text:'Whatsoever ye do, do it heartily, as to the Lord, and not unto men.'},
+      {ref:'1 Corinthians 10:31 (KJV)', text:'Whether therefore ye eat, or drink, or whatsoever ye do, do all to the glory of God.'},
+      {ref:'Proverbs 16:3 (KJV)', text:'Commit thy works unto the LORD, and thy thoughts shall be established.'},
+      {ref:'Proverbs 21:5 (KJV)', text:'The thoughts of the diligent tend only to plenteousness...'},
+      {ref:'Proverbs 22:29 (KJV)', text:'Seest thou a man diligent in his business? he shall stand before kings...'},
+      {ref:'Ephesians 5:15–16 (KJV)', text:'See then that ye walk circumspectly... redeeming the time, because the days are evil.'},
+      {ref:'Psalm 90:12 (KJV)', text:'So teach us to number our days, that we may apply our hearts unto wisdom.'},
+      {ref:'2 Timothy 1:7 (KJV)', text:'For God hath not given us the spirit of fear; but of power, and of love, and of a sound mind.'},
+      {ref:'Philippians 4:13 (KJV)', text:'I can do all things through Christ which strengtheneth me.'},
+      {ref:'Galatians 6:9 (KJV)', text:'Let us not be weary in well doing: for in due season we shall reap, if we faint not.'},
+      {ref:'Hebrews 12:1–2 (KJV)', text:'Let us run with patience the race that is set before us, looking unto Jesus the author and finisher of our faith.'},
+      {ref:'James 1:5 (KJV)', text:'If any of you lack wisdom, let him ask of God...'},
+      {ref:'Nehemiah 6:3 (KJV)', text:'I am doing a great work, so that I cannot come down.'},
+      {ref:'1 Thessalonians 4:11–12 (KJV)', text:'Study to be quiet, and to do your own business, and to work with your own hands...'},
+      {ref:'Proverbs 13:4 (KJV)', text:'The soul of the diligent shall be made fat.'},
+      {ref:'Proverbs 14:23 (KJV)', text:'In all labour there is profit...'},
+      {ref:'1 Corinthians 15:58 (KJV)', text:'Be ye stedfast, unmoveable, always abounding in the work of the Lord...'},
+      {ref:'Romans 12:11 (KJV)', text:'Not slothful in business; fervent in spirit; serving the Lord.'},
+      {ref:'Proverbs 12:24 (KJV)', text:'The hand of the diligent shall bear rule...'},
+      {ref:'Ecclesiastes 9:10 (KJV)', text:'Whatsoever thy hand findeth to do, do it with thy might...'},
+      {ref:'Psalm 119:105 (KJV)', text:'Thy word is a lamp unto my feet, and a light unto my path.'},
+      {ref:'Luke 16:10 (KJV)', text:'He that is faithful in that which is least is faithful also in much...'},
+      {ref:'Proverbs 4:25–27 (KJV)', text:'Let thine eyes look right on... turn not to the right hand nor to the left.'},
+      {ref:'Joshua 1:8–9 (KJV)', text:'This book of the law shall not depart out of thy mouth... be strong and of a good courage.'},
+      {ref:'Matthew 6:33 (KJV)', text:'Seek ye first the kingdom of God, and his righteousness...'},
+      {ref:'John 9:4 (KJV)', text:'I must work the works of him that sent me, while it is day...'},
+      {ref:'2 Corinthians 9:8 (KJV)', text:'God is able to make all grace abound toward you; that ye... may abound to every good work.'},
+      {ref:'Titus 3:8 (KJV)', text:'Be careful to maintain good works.'},
+      {ref:'Proverbs 11:14 (KJV)', text:'Where no counsel is, the people fall: but in the multitude of counsellors there is safety.'},
+      {ref:'Proverbs 15:22 (KJV)', text:'Without counsel purposes are disappointed: but in the multitude of counsellors they are established.'},
+      {ref:'Psalm 37:5 (KJV)', text:'Commit thy way unto the LORD; trust also in him; and he shall bring it to pass.'},
+      {ref:'Isaiah 41:10 (KJV)', text:'Fear thou not; for I am with thee: be not dismayed; for I am thy God... I will strengthen thee...'},
+      {ref:'Psalm 1:2–3 (KJV)', text:'His delight is in the law of the LORD... whatsoever he doeth shall prosper.'},
+      {ref:'Colossians 4:5 (KJV)', text:'Walk in wisdom toward them that are without, redeeming the time.'},
+      {ref:'Proverbs 24:27 (KJV)', text:'Prepare thy work without, and make it fit for thyself in the field; and afterwards build thine house.'},
+      {ref:'Proverbs 10:4 (KJV)', text:'He becometh poor that dealeth with a slack hand: but the hand of the diligent maketh rich.'},
+      {ref:'2 Thessalonians 3:10 (KJV)', text:'If any would not work, neither should he eat.'},
+      {ref:'Proverbs 27:17 (KJV)', text:'Iron sharpeneth iron; so a man sharpeneth the countenance of his friend.'},
+      {ref:'Psalm 128:2 (KJV)', text:'Thou shalt eat the labour of thy hands: happy shalt thou be, and it shall be well with thee.'},
+      {ref:'1 Peter 4:10 (KJV)', text:'As every man hath received the gift, even so minister the same one to another...'}
+    ];
+
+    function renderVerseAt(elId, list, idx){
+      const el = $id(elId); if(!el) return;
+      const n = list.length; if(n===0) return;
+      const i = ((idx % n) + n) % n;
+      const v = list[i];
+      el.innerHTML = `${v.text} <span class="ref">${v.ref}</span>`;
+    }
+    function initScripture(sectionKey, elId, list, prevBtnId, nextBtnId){
+      const saved = store.get(sectionKey+':idx', null);
+      let idx = (saved!==null) ? saved : (SCRIPTURE_MODE==='daily' ? (daySeed() % list.length) : Math.floor(Math.random()*list.length));
+      renderVerseAt(elId, list, idx);
+      const prevBtn = $id(prevBtnId), nextBtn = $id(nextBtnId);
+      on(prevBtn,'click', ()=>{ idx = (idx-1+list.length)%list.length; store.set(sectionKey+':idx', idx); renderVerseAt(elId, list, idx); });
+      on(nextBtn,'click', ()=>{ idx = (idx+1)%list.length; store.set(sectionKey+':idx', idx); renderVerseAt(elId, list, idx); });
+    }
+
+    // ================= Precise timer =================
+    class PreciseTimer{
+      constructor(d,onT,onD){this.total=d;this.onTick=onT;this.onDone=onD;this.reset()}
+      reset(){this.startTs=0;this.elapsed=0;this.running=false}
+      start(){if(this.running)return;this.running=true;this.startTs=performance.now()-this.elapsed*1000;this._tick()}
+      pause(){if(!this.running)return;this.running=false;this.elapsed=(performance.now()-this.startTs)/1000}
+      _tick(){if(!this.running)return;const now=performance.now();this.elapsed=(now-this.startTs)/1000;const remain=Math.max(0,this.total-this.elapsed);this.onTick?.(this.elapsed,remain,this.total);if(remain<=0.01){this.running=false;this.onDone?.();return}requestAnimationFrame(()=>this._tick())}
+    }
+
+    // ================= Breathwork visuals =================
+    const bw={
+      patternEl:$id('bwPattern'), visualEl:$id('bwVisual'), durationEl:$id('bwDuration'), musicEl:$id('bwMusic'),
+      startBtn:$id('bwStart'), pauseBtn:$id('bwPause'), resetBtn:$id('bwReset'),
+      cueEl:$id('bwCue'), bar:$id('bwBar'), wrap:$id('bwVisualWrap'),
+      orb:$id('orb'), cross:$id('cross'), stars:$id('stars'), branches:$id('branches'),
+      starUni:null, starGA:null, starGB:null, starAnimId:0, starStart:0, starW:0, starH:0, starPaused:false,
+      timer:null, animId:0, stageIdx:0, stageElapsed:0, stages:[], lastScale:1
+    };
+    const SCALE_MIN=0.55, SCALE_MAX=1.45;
+
+    function buildStages(key){
+      if(key&&key.startsWith('box')){
+        const s=Number(key.split('-')[1]);
+        return [
+          {l:'Inhale',type:'inh',sec:s},{l:'Hold',type:'hold-full',sec:s},{l:'Exhale',type:'exh',sec:s},{l:'Hold',type:'hold-empty',sec:s}
+        ];
+      } else {
+        const s=Number((key||'even-4').split('-')[1]||4);
+        return [{l:'Inhale',type:'inh',sec:s},{l:'Exhale',type:'exh',sec:s}];
+      }
+    }
+
+    function showVisual(which){
+      if(!bw.orb||!bw.cross||!bw.stars||!bw.branches) return;
+      [bw.orb,bw.cross,bw.stars,bw.branches].forEach(el=> el.hidden=true);
+      stopStarDrift();
+      if (bw.branches) bw.branches.innerHTML='';
+
+      if (which==='orb') { bw.orb.hidden=false; }
+      if (which==='cross') { bw.cross.hidden=false; }
+      if (which==='starfield') { bw.stars.hidden=false; ensureStarfield(); startStarDrift(); }
+      if (which==='branches') { bw.branches.hidden=false; drawBranches(bw.lastScale); }
+
+      updateCueColor(); // clears inline styles so CSS can set theme-specific look
+    }
+
+    function targetScaleFor(type, phase){
+      if(type==='inh') return lerp(SCALE_MIN, SCALE_MAX, ease(phase));
+      if(type==='exh') return lerp(SCALE_MAX, SCALE_MIN, ease(phase));
+      if(type==='hold-full') return SCALE_MAX;
+      if(type==='hold-empty') return SCALE_MIN;
+      return 1;
+    }
+
+    function applyScale(scale){
+      bw.lastScale = scale;
+      if (bw.orb && !bw.orb.hidden)   bw.orb.style.setProperty('--scale', scale);
+      if (bw.cross && !bw.cross.hidden) bw.cross.style.setProperty('--scale', scale);
+      if (bw.branches && !bw.branches.hidden) drawBranches(scale);
+      pulseUniverseScale(scale);
+    }
+
+    // ----- Cue text: now defers to CSS; this clears any old inline styles -----
+    function updateCueColor(){
+      const cue = bw.cueEl; if(!cue) return;
+      cue.style.color = '';
+      cue.style.webkitTextStroke = '';
+      cue.style.textShadow = '';
+    }
+
+    // ----- Starfield -----
+    function ensureStarfield(){
+      const svg=$id('starsSvg'); if(!svg) return;
+      while(svg.firstChild) svg.removeChild(svg.firstChild);
+      buildStars(svg);
+    }
+    function buildStars(svg){
+      const rect=bw.wrap.getBoundingClientRect();
+      const w=Math.max(300,Math.floor(rect.width));
+      const h=Math.max(240,Math.floor(rect.height));
+      bw.starW=w; bw.starH=h; svg.setAttribute('viewBox',`0 0 ${w} ${h}`);
+
+      const defs=document.createElementNS('http://www.w3.org/2000/svg','defs');
+      const grad=document.createElementNS('http://www.w3.org/2000/svg','radialGradient'); grad.id='halo'; grad.setAttribute('cx','50%'); grad.setAttribute('cy','50%'); grad.setAttribute('r','50%');
+      const s1=document.createElementNS('http://www.w3.org/2000/svg','stop'); s1.setAttribute('offset','0%'); s1.setAttribute('stop-color','var(--sky-blue)'); s1.setAttribute('stop-opacity','0.9');
+      const s2=document.createElementNS('http://www.w3.org/2000/svg','stop'); s2.setAttribute('offset','100%'); s2.setAttribute('stop-color','var(--sky-blue)'); s2.setAttribute('stop-opacity','0');
+      grad.appendChild(s1); grad.appendChild(s2); defs.appendChild(grad); svg.appendChild(defs);
+
+      const uni=document.createElementNS('http://www.w3.org/2000/svg','g'); uni.setAttribute('id','universe');
+      const gA=document.createElementNS('http://www.w3.org/2000/svg','g');
+      const gB=document.createElementNS('http://www.w3.org/2000/svg','g');
+
+      const add=(g)=>{ const x=Math.random()*w, y=Math.random()*h, r=1+Math.random()*1.7;
+        const halo=document.createElementNS('http://www.w3.org/2000/svg','circle'); halo.setAttribute('cx',x); halo.setAttribute('cy',y); halo.setAttribute('r',r*3.8); halo.setAttribute('fill','url(#halo)'); halo.setAttribute('class','star');
+        const c=document.createElementNS('http://www.w3.org/2000/svg','circle'); c.setAttribute('cx',x); c.setAttribute('cy',y); c.setAttribute('r',r); c.setAttribute('fill','var(--sky-blue)'); c.setAttribute('class','star');
+        g.appendChild(halo); g.appendChild(c);
+      };
+      for(let i=0;i<70;i++) add(gA);
+      for(let i=0;i<70;i++) add(gB);
+      uni.appendChild(gA); uni.appendChild(gB); svg.appendChild(uni);
+      bw.starUni=uni; bw.starGA=gA; bw.starGB=gB;
+    }
+    function pulseUniverseScale(scale){
+      if(!bw.starUni) return; const cx=bw.starW/2, cy=bw.starH/2;
+      const s = 0.92 + (scale - 1)*0.25;
+      bw.starUni.setAttribute('transform',`translate(${cx},${cy}) scale(${s}) translate(${-cx},${-cy})`);
+    }
+    function startStarDrift(){
+      if(bw.starAnimId) cancelAnimationFrame(bw.starAnimId);
+      bw.starPaused=false;
+      let start=performance.now();
+      const step=(t)=>{
+        const dt=(t-start)/1000;
+        if(!bw.starPaused){
+          const ax=Math.sin(dt/3)*26, ay=Math.cos(dt/4)*14;
+          const bx=Math.cos(dt/5)*34, by=Math.sin(dt/3.6)*18;
+          if(bw.starGA) bw.starGA.setAttribute('transform',`translate(${ax},${ay})`);
+          if(bw.starGB) bw.starGB.setAttribute('transform',`translate(${bx},${by})`);
+        }
+        bw.starAnimId=requestAnimationFrame(step);
+      };
+      bw.starAnimId=requestAnimationFrame(step);
+    }
+    function stopStarDrift(){
+      if(bw.starAnimId){ cancelAnimationFrame(bw.starAnimId); bw.starAnimId=0; }
+      if(bw.starGA) bw.starGA.removeAttribute('transform');
+      if(bw.starGB) bw.starGB.removeAttribute('transform');
+    }
+    on($id('bwPause'),'click', ()=>{ bw.starPaused=true; stopStarDrift(); });
+    on($id('bwReset'),'click', ()=>{ bw.starPaused=true; stopStarDrift(); });
+    on($id('bwStart'),'click', ()=>{ if(bw.stars && !bw.stars.hidden){ bw.starPaused=false; startStarDrift(); } });
+
+    // ----- Branches (SVG) -----
+    function drawBranches(scale){
+      const svg=bw.branches; if(!svg) return;
+      const rect=bw.wrap.getBoundingClientRect();
+      const w=Math.max(300,Math.floor(rect.width));
+      const h=Math.max(240,Math.floor(rect.height));
+      svg.setAttribute('viewBox',`0 0 ${w} ${h}`); svg.innerHTML='';
+
+      const defs=document.createElementNS('http://www.w3.org/2000/svg','defs');
+      const filt=document.createElementNS('http://www.w3.org/2000/svg','filter'); filt.setAttribute('id','glow');
+      const blur=document.createElementNS('http://www.w3.org/2000/svg','feGaussianBlur'); blur.setAttribute('stdDeviation','2.2'); blur.setAttribute('result','b');
+      const merge=document.createElementNS('http://www.w3.org/2000/svg','feMerge');
+      const m1=document.createElementNS('http://www.w3.org/2000/svg','feMergeNode'); m1.setAttribute('in','b');
+      const m2=document.createElementNS('http://www.w3.org/2000/svg','feMergeNode'); m2.setAttribute('in','SourceGraphic');
+      merge.appendChild(m1); merge.appendChild(m2); filt.appendChild(blur); filt.appendChild(merge); defs.appendChild(filt); svg.appendChild(defs);
+
+      const group=document.createElementNS('http://www.w3.org/2000/svg','g');
+      group.setAttribute('stroke','var(--olive-green)'); group.setAttribute('fill','none'); group.setAttribute('filter','url(#glow)');
+
+      const norm = clamp((scale - SCALE_MIN)/(SCALE_MAX - SCALE_MIN), 0, 1);
+      const depth = Math.round(3 + norm*3);
+      const trunk = 56 + norm*92;
+      const spread = 0.45 + norm*0.28;
+      const shrink = 0.68;
+      const baseY = h*0.85;
+      const strokeBase = 2.0 + norm*2.0;
+
+      const branch=(x,y,len,ang,dep)=>{
+        const x2 = x + len*Math.cos(ang), y2 = y + len*Math.sin(ang);
+        const line=document.createElementNS('http://www.w3.org/2000/svg','line');
+        line.setAttribute('x1',x); line.setAttribute('y1',y); line.setAttribute('x2',x2); line.setAttribute('y2',y2);
+        line.setAttribute('stroke-width', Math.max(1.3, strokeBase*dep/depth));
+        group.appendChild(line);
+        if(dep<=1) return;
+        const l2=len*shrink;
+        branch(x2,y2,l2,ang+spread,dep-1);
+        branch(x2,y2,l2,ang-spread,dep-1);
+      };
+
+      branch(w/2, baseY, trunk, -Math.PI/2, depth);
+      const halo=document.createElementNS('http://www.w3.org/2000/svg','ellipse');
+      halo.setAttribute('cx', w/2); halo.setAttribute('cy', baseY+6);
+      halo.setAttribute('rx', trunk*0.9); halo.setAttribute('ry', trunk*0.35);
+      halo.setAttribute('fill','rgba(111,175,138,0.10)');
+
+      svg.appendChild(halo);
+      svg.appendChild(group);
+    }
+
+    // Resize handling
+    const ro = new ResizeObserver(()=>{
+      if(!bw.wrap) return;
+      if(bw.branches && !bw.branches.hidden){ drawBranches(bw.lastScale); }
+      if(bw.stars && !bw.stars.hidden){ ensureStarfield(); }
+    });
+    ro.observe($id('bwVisualWrap'));
+
+    // ----- Breathwork logic -----
+    function startBreathwork(){
+      const total = Number(bw.durationEl?.value||600);
+      bw.stages = buildStages(bw.patternEl?.value||'even-4');
+      bw.stageIdx = 0; bw.stageElapsed = 0; if(bw.cueEl) bw.cueEl.textContent = bw.stages[0].l;
+      store.set('bw_pref',{ pattern: bw.patternEl?.value, visual: bw.visualEl?.value, duration: total, music: bw.musicEl?.value });
+
+      bw.timer = new PreciseTimer(total, (elapsed, remain, total) => {
+        if(bw.bar) bw.bar.style.width = (elapsed/total*100).toFixed(2)+'%';
+      }, () => {
+        if(bw.startBtn) bw.startBtn.disabled = false; if(bw.pauseBtn) bw.pauseBtn.disabled = true; if(bw.resetBtn) bw.resetBtn.disabled = true;
+        if(bw.cueEl) bw.cueEl.textContent = 'Complete'; cancelAnimationFrame(bw.animId);
+        bw.starPaused=true; stopStarDrift();
+      }); bw.timer.start();
+
+      let lastTs = performance.now();
+      function loop(ts){
+        const dt = (ts - lastTs)/1000; lastTs = ts;
+        const cur = bw.stages[bw.stageIdx];
+        bw.stageElapsed += dt;
+        if (bw.stageElapsed >= cur.sec){
+          const leftover = bw.stageElapsed - cur.sec;
+          bw.stageIdx = (bw.stageIdx + 1) % bw.stages.length;
+          bw.stageElapsed = leftover;
+          if(bw.cueEl) bw.cueEl.textContent = bw.stages[bw.stageIdx].l;
+          // Pause starfield during holds
+          bw.starPaused = (bw.stages[bw.stageIdx].type==='hold-full' || bw.stages[bw.stageIdx].type==='hold-empty');
+        }
+        const phase = clamp(bw.stageElapsed / bw.stages[bw.stageIdx].sec, 0, 1);
+        const scale = targetScaleFor(bw.stages[bw.stageIdx].type, phase);
+        applyScale(scale);
+        bw.animId = requestAnimationFrame(loop);
+      }
+      cancelAnimationFrame(bw.animId); bw.animId = requestAnimationFrame(loop);
+      if(bw.startBtn) bw.startBtn.disabled = true; if(bw.pauseBtn) bw.pauseBtn.disabled = false; if(bw.resetBtn) bw.resetBtn.disabled = false;
+      if(bw.stars && !bw.stars.hidden){ bw.starPaused=false; startStarDrift(); }
+    }
+    function pauseBreathwork(){
+      bw.timer?.pause(); cancelAnimationFrame(bw.animId);
+      bw.starPaused=true; stopStarDrift();
+      if(bw.pauseBtn) bw.pauseBtn.disabled = true; if(bw.startBtn){ bw.startBtn.disabled = false; bw.startBtn.textContent = 'Resume'; }
+    }
+    function resetBreathwork(){
+      bw.timer?.pause(); bw.timer = null; cancelAnimationFrame(bw.animId);
+      bw.starPaused=true; stopStarDrift();
+      if(bw.bar) bw.bar.style.width = '0%';
+      if(bw.cueEl) bw.cueEl.textContent = 'Ready';
+      if(bw.startBtn){ bw.startBtn.textContent = 'Start'; bw.startBtn.disabled = false; }
+      if(bw.pauseBtn) bw.pauseBtn.disabled = true;
+      if(bw.resetBtn) bw.resetBtn.disabled = true;
+      applyScale(1);
+    }
+
+    (function initBreathwork(){
+      initScripture('bw','bwVerse',VERSES_BREATH,'bwPrev','bwNext');
+
+      const pref = store.get('bw_pref', null);
+      if (pref){
+        if (pref.pattern && bw.patternEl) bw.patternEl.value = pref.pattern;
+        if (pref.visual && bw.visualEl) bw.visualEl.value = pref.visual;
+        if (pref.duration && bw.durationEl) bw.durationEl.value = String(pref.duration);
+        if (pref.music && bw.musicEl) bw.musicEl.value = pref.music;
+      }
+      showVisual(bw.visualEl?.value);
+      on(bw.patternEl,'change', ()=> store.set('bw_pref', { ...store.get('bw_pref', {}), pattern: bw.patternEl.value }));
+      on(bw.visualEl,'change', (e)=>{ showVisual(e.target.value); store.set('bw_pref', { ...store.get('bw_pref', {}), visual: e.target.value }); });
+      on(bw.durationEl,'change', ()=> store.set('bw_pref', { ...store.get('bw_pref', {}), duration: Number(bw.durationEl.value) }));
+      on(bw.musicEl,'change', ()=> {
+        store.set('bw_pref', { ...store.get('bw_pref', {}), music: bw.musicEl.value });
+        const y=$id('bwYT'); if(y){ y.style.display = (bw.musicEl.value==='off') ? 'none' : 'block'; }
+      });
+      on(bw.startBtn,'click', startBreathwork);
+      on(bw.pauseBtn,'click', pauseBreathwork);
+      on(bw.resetBtn,'click', resetBreathwork);
+      const y=$id('bwYT'); if(y && bw.musicEl){ y.style.display = (bw.musicEl.value==='off') ? 'none' : 'block'; }
+      updateCueColor();
+    })();
+
+    // ================= Pomodoro =================
+    const pd={
+      roundsEl:$id('pdRounds'), focusEl:$id('pdFocus'), shortEl:$id('pdShort'), longEl:$id('pdLong'),
+      startBtn:$id('pdStart'), pauseBtn:$id('pdPause'), resetBtn:$id('pdReset'), skipBtn:$id('pdSkip'),
+      stateEl:$id('pdState'), chip:$id('pdChip'), bar:$id('pdBar'), clock:$id('pdClock'),
+      timer:null, round:1, phase:'focus'
+    };
+    const fmt=(sec)=>{const m=Math.floor(sec/60),s=Math.floor(sec%60);return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`};
+    function updatePdState(){
+      const totalRounds=Number(pd.roundsEl?.value||4);
+      const label=pd.phase==='focus'?`Focus ${pd.round} of ${totalRounds}`:(pd.phase==='short'?'Short break':'Long break');
+      if(pd.stateEl){ pd.stateEl.textContent=label; pd.stateEl.setAttribute('aria-label',label); }
+      if(pd.chip){
+        pd.chip.textContent = (pd.phase==='focus')? 'Focus' : (pd.phase==='short'? 'Break' : 'Long Break');
+        pd.chip.className = 'chip ' + ((pd.phase==='focus')?'chip-focus':(pd.phase==='short'?'chip-short':'chip-long'));
+      }
+    }
+    function nextPdPhase(){
+      const totalRounds=Number(pd.roundsEl?.value||4);
+      if(pd.phase==='focus'){
+        if(pd.round%totalRounds===0){ pd.phase='long' } else { pd.phase='short' }
+      } else {
+        if(pd.phase==='long'){ pd.phase='focus'; pd.round=1 } else { pd.phase='focus'; pd.round+=1 }
+      }
+      startPdPhase()
+    }
+    function startPdPhase(){
+      const focusSec=Number(pd.focusEl?.value||25)*60, shortSec=Number(pd.shortEl?.value||5)*60, longSec=Number(pd.longEl?.value||15)*60;
+      let total=focusSec; if(pd.phase==='short') total=shortSec; if(pd.phase==='long') total=longSec;
+      pd.timer?.pause();
+      pd.timer=new PreciseTimer(total,(elapsed,remain,total)=>{
+        if(pd.bar) pd.bar.style.width=(elapsed/total*100).toFixed(2)+'%';
+        if(pd.clock) pd.clock.textContent=fmt(remain)
+      },()=>{ nextPdPhase() });
+      updatePdState(); pd.timer.start();
+      if(pd.startBtn) pd.startBtn.disabled=true; if(pd.pauseBtn) pd.pauseBtn.disabled=false; if(pd.resetBtn) pd.resetBtn.disabled=false; if(pd.skipBtn) pd.skipBtn.disabled=(pd.phase==='focus')
+    }
+    function resetPomodoro(){
+      pd.timer?.pause(); pd.timer=null; pd.round=1; pd.phase='focus'; updatePdState();
+      if(pd.bar) pd.bar.style.width='0%';
+      if(pd.clock) pd.clock.textContent=fmt(Number(pd.focusEl?.value||25)*60);
+      if(pd.startBtn) pd.startBtn.disabled=false; if(pd.pauseBtn) pd.pauseBtn.disabled=true; if(pd.resetBtn) pd.resetBtn.disabled=true; if(pd.skipBtn) pd.skipBtn.disabled=true
+    }
+
+    (function initPomodoro(){
+      initScripture('pd','pdVerse',VERSES_POMO,'pdPrev','pdNext');
+
+      const pref=store.get('pd_pref',null);
+      if(pref){
+        if(pref.rounds&&pd.roundsEl) pd.roundsEl.value=pref.rounds;
+        if(pref.focus&&pd.focusEl) pd.focusEl.value=pref.focus;
+        if(pref.short&&pd.shortEl) pd.shortEl.value=pref.short;
+        if(pref.long&&pd.longEl)  pd.longEl.value=pref.long;
+      }
+      updatePdState(); if(pd.clock && pd.focusEl) pd.clock.textContent=fmt(Number(pd.focusEl.value)*60);
+      on(pd.startBtn,'click',()=>startPdPhase());
+      on(pd.pauseBtn,'click',()=>{ pd.timer?.pause(); if(pd.startBtn) pd.startBtn.disabled=false; if(pd.pauseBtn) pd.pauseBtn.disabled=true });
+      on(pd.resetBtn,'click',resetPomodoro);
+      on(pd.skipBtn,'click',()=>{ if(pd.phase!=='focus'){ nextPdPhase() } });
+      [pd.roundsEl,pd.focusEl,pd.shortEl,pd.longEl].forEach(el=> on(el,'change',()=>{ store.set('pd_pref',{rounds:pd.roundsEl?.value,focus:pd.focusEl?.value,short:pd.shortEl?.value,long:pd.longEl?.value}); if(!pd.timer && pd.clock && pd.focusEl){ updatePdState(); pd.clock.textContent=fmt(Number(pd.focusEl.value)*60) } }));
+    })();
+
+    // ================= Footer + select styling =================
+    const yearEl=$id('year'); if(yearEl) yearEl.textContent=new Date().getFullYear();
+    document.querySelectorAll('select').forEach(el=>el.classList.add('ui-select'));
+
+    // ================= Sanity checks (console-only) =================
+    (function selfTest(){
+      const requiredIds=['themeToggle','bwPattern','bwVisual','bwDuration','bwMusic','bwStart','bwPause','bwReset','bwCue','bwBar','orb','cross','stars','branches','pdRounds','pdFocus','pdShort','pdLong','pdStart','pdPause','pdReset','pdSkip','pdState','pdChip','pdBar','pdClock','bwVerse','pdVerse','bwPrev','bwNext','pdPrev','pdNext'];
+      requiredIds.forEach(id=>{ console.assert(!!$id(id), `Missing #${id}`); });
+      console.assert(VERSES_BREATH.length>=40,'Breathwork verses < 40');
+      console.assert(VERSES_POMO.length>=40,'Pomodoro verses < 40');
+    })();
+  </script>
+</body>
+</html>
