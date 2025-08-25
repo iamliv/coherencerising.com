@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Coherence Rising — Resources</title>
+  <meta name="description" content="Meditation, breathwork, and music resources to support your Christian discipleship journey" />
+  <meta name="theme-color" content="#0F1414" />
+
+  <!-- Open Graph / Social Sharing -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Coherence Rising — Resources" />
+  <meta property="og:description" content="Meditation, breathwork, and music resources to support your Christian discipleship journey" />
+  <meta property="og:url" content="https://www.coherencerising.com/" />
+  <meta property="og:image" content="https://www.coherencerising.com/assets/CoherenceRising_Logo_512x512.png" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Coherence Rising — Resources" />
+  <meta name="twitter:description" content="Meditation, breathwork, and music resources to support your Christian discipleship journey" />
+  <meta name="twitter:image" content="https://www.coherencerising.com/assets/CoherenceRising_Logo_512x512.png" />
+
+  <!-- Favicon -->
+  <link rel="icon" href="/assets/CoherenceRising_Logo_512x512.png" type="image/png" />
+  <link rel="apple-touch-icon" href="/assets/CoherenceRising_Logo_512x512.png" />
+
+  <style>
+    :root{
+      --soft-gold:#F5E6A1; --olive-green:#6FAF8A; --bg:#FAF8F3; --panel:#FFFFFF; --text:#2A2F2F; --muted:#4D5A5A; --border:#E9E4DA; --accent:var(--olive-green);
+    }
+    html[data-theme="dark"]{
+      --bg:#0F1414; --panel:#171D1D; --text:#F6F6F2; --muted:#B7C1C1; --border:#2A3232; --accent:#6FAF8A; --divider-strong:#3C4949;
+    }
+
+    body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,sans-serif;}
+    .container{max-width:860px;margin:0 auto;padding:12px}
+
+    header.site{
+      display:flex; flex-direction:column; align-items:center; text-align:center;
+      background:var(--panel); border:1px solid var(--border); border-radius:22px; padding:20px; margin:12px 0 16px;
+      box-shadow:0 10px 30px rgba(0,0,0,.08);
+      position:relative;
+    }
+    .brand{display:flex; flex-direction:column; align-items:center; gap:12px; margin-bottom:12px;}
+    .brand img{width:120px;height:120px;border-radius:22px;border:1px solid var(--border);object-fit:cover}
+    .brand h1{margin:0;font-size:2rem;line-height:1.2}
+    .brand .byline{color:var(--muted);margin-top:6px;font-size:1.05rem;line-height:1.4;max-width:32ch}
+
+    .theme-wrap{margin-top:8px;padding:8px;border-radius:14px;border:1px solid var(--border);background:var(--panel);display:flex;align-items:center;gap:.65rem}
+    .theme-wrap .label{display:none}
+    .switch{position:relative;width:52px;height:28px;border-radius:999px;background:var(--panel);border:1px solid var(--border);cursor:pointer}
+    .knob{position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:var(--soft-gold);transition:left .18s ease}
+    html[data-theme="dark"] .knob{left:27px;background:var(--olive-green)}
+
+    /* Divider line below header */
+    header.site::after{
+      content:"";
+      display:block;
+      width:100%;
+      height:1px;
+      background:var(--border);
+      margin-top:16px;
+    }
+    html[data-theme="dark"] header.site::after{
+      background:linear-gradient(to right, transparent, var(--divider-strong), transparent);
+    }
+
+    @media (min-width:640px){
+      header.site{flex-direction:row;align-items:center;text-align:left}
+      .brand{flex-direction:row;align-items:center;gap:24px;margin-bottom:0}
+      .brand img{width:130px;height:130px;border-radius:24px}
+      .brand h1{font-size:2.2rem}
+      .brand .byline{font-size:1.1rem;margin-top:8px}
+      .theme-wrap{margin-left:auto;margin-top:0}
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="site" aria-label="Header">
+      <div class="brand">
+        <img src="assets/CoherenceRising_Logo_512x512.png" alt="Coherence Rising logo" onerror="this.style.display='none'" />
+        <div>
+          <h1>Coherence Rising</h1>
+          <div class="byline">Meditation, breathwork, and music resources to support your Christian discipleship journey</div>
+        </div>
+      </div>
+
+      <div class="theme-wrap" role="group" aria-label="Theme toggle">
+        <span class="label">Theme</span>
+        <span aria-hidden="true">Day</span>
+        <button id="themeToggle" class="switch" type="button" aria-pressed="false" aria-label="Toggle dark mode">
+          <span class="knob" aria-hidden="true"></span>
+        </button>
+        <span aria-hidden="true">Night</span>
+      </div>
+    </header>
+
+    <section class="intro" aria-label="Intro">
+      Welcome — I’m Liv. Explore Christ-centered projects to support your spiritual growth.
+    </section>
+  </div>
+
+  <script>
+    const btn=document.getElementById('themeToggle');
+    const apply=(m)=>{document.documentElement.setAttribute('data-theme',m);};
+    btn.addEventListener('click',()=>{
+      const cur=document.documentElement.getAttribute('data-theme')==='dark'?'dark':'light';
+      apply(cur==='dark'?'light':'dark');
+    });
+  </script>
+</body>
+</html>
