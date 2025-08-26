@@ -63,7 +63,7 @@
 
     /* CARDS */
     #links{display:grid;gap:10px;margin-top:16px}
-    .card{display:flex;flex-direction:column;align-items:flex-start;gap:6px;padding:12px;border-radius:var(--radius);background:var(--panel);border:1px solid var(--border);box-shadow:0 8px 24px rgba(0,0,0,.06)}
+    .card{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:6px;padding:12px;border-radius:var(--radius);background:var(--panel);border:1px solid var(--border);box-shadow:0 8px 24px rgba(0,0,0,.06)}
     .card:hover{box-shadow:0 12px 32px rgba(0,0,0,.10);border-color:color-mix(in oklab, var(--accent), black 14%)}
     .card .top{display:flex;align-items:center;gap:10px;width:100%}
     .icon{flex:0 0 42px;width:42px;height:42px;border-radius:12px;display:grid;place-items:center;border:1px solid var(--border);background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(0,0,0,.06))}
@@ -72,13 +72,18 @@
     .sub{color:var(--muted);font-size:.9rem}
     .actions{display:flex;gap:8px;margin-top:6px}
 
-    .link-btn,.copy-btn{display:inline-flex;align-items:center;gap:6px;text-decoration:none;color:var(--text);background:var(--panel);border:1px solid var(--border);border-radius:999px;padding:8px 12px;font-size:.92rem;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.06);transition:transform .12s ease,box-shadow .12s ease,background .12s ease}
+    .link-btn,.copy-btn{position:relative;display:inline-flex;align-items:center;gap:6px;text-decoration:none;color:var(--text);background:var(--panel);border:1px solid var(--border);border-radius:999px;padding:8px 12px;font-size:.92rem;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.06);transition:transform .12s ease,box-shadow .12s ease,background .12s ease}
     .link-btn:hover,.copy-btn:hover{transform:translateY(-1px);box-shadow:0 6px 14px rgba(0,0,0,.10);background:var(--accent);color:#fff}
     .link-btn:focus-visible,.copy-btn:focus-visible{outline:none;box-shadow:0 0 0 4px var(--ring)}
     .link-btn svg,.copy-btn svg{width:16px;height:16px;stroke:var(--accent)}
     .link-btn:hover svg,.copy-btn:hover svg{stroke:#fff}
     .link-btn .arrow{stroke:var(--accent);stroke-width:2.4}
     .link-btn:hover .arrow{stroke:#fff}
+
+    /* Copy tooltip (in addition to toast) */
+    .copy-btn::after{content:attr(data-tip); position:absolute; left:50%; bottom:120%; transform:translateX(-50%); background:var(--panel); color:var(--text); border:1px solid var(--border); padding:4px 8px; border-radius:8px; box-shadow:0 8px 20px rgba(0,0,0,.14); white-space:nowrap; opacity:0; pointer-events:none; transition:opacity .18s ease}
+    .copy-btn::before{content:""; position:absolute; left:50%; bottom:110%; transform:translateX(-50%); border:6px solid transparent; border-top-color:var(--panel); filter:drop-shadow(0 -1px 0 var(--border)); opacity:0; transition:opacity .18s ease}
+    .copy-btn.copied::after,.copy-btn.copied::before{opacity:1}
 
     /* FOOTER */
     footer.site{margin:20px 0 10px;text-align:center;color:var(--muted)}
@@ -131,7 +136,7 @@
           </div>
         </div>
         <div class="actions">
-          <a class="link-btn" href="https://www.coherencerising.com/about/index.html" aria-label="Visit About page">
+          <a class="link-btn" href="https://www.coherencerising.com/about/index.html" target="_blank" rel="noopener" aria-label="Visit About page">
             <svg class="arrow" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M12 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
             Visit
           </a>
@@ -154,7 +159,7 @@
           </div>
         </div>
         <div class="actions">
-          <a class="link-btn" href="https://www.coherencerising.com/app/index.html" aria-label="Visit Breath of Faith app">
+          <a class="link-btn" href="https://www.coherencerising.com/app/index.html" target="_blank" rel="noopener" aria-label="Visit Breath of Faith app">
             <svg class="arrow" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M12 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
             Visit
           </a>
@@ -177,7 +182,7 @@
           </div>
         </div>
         <div class="actions">
-          <a class="link-btn" href="https://www.coherencerising.com/insighttimer/index.html" aria-label="Visit Insight Timer page">
+          <a class="link-btn" href="https://www.coherencerising.com/insighttimer/index.html" target="_blank" rel="noopener" aria-label="Visit Insight Timer page">
             <svg class="arrow" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M12 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
             Visit
           </a>
@@ -200,7 +205,7 @@
           </div>
         </div>
         <div class="actions">
-          <a class="link-btn" href="https://distrokid.com/hyperfollow/coherencerising/the-mercy-that-surrounds-me" aria-label="Visit album The Mercy That Surrounds Me">
+          <a class="link-btn" href="https://distrokid.com/hyperfollow/coherencerising/the-mercy-that-surrounds-me" target="_blank" rel="noopener" aria-label="Visit album The Mercy That Surrounds Me">
             <svg class="arrow" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M12 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
             Visit
           </a>
@@ -223,7 +228,7 @@
           </div>
         </div>
         <div class="actions">
-          <a class="link-btn" href="https://distrokid.com/hyperfollow/coherencerising/christian-mystical-lofi" aria-label="Visit album Christian Mystical LoFi">
+          <a class="link-btn" href="https://distrokid.com/hyperfollow/coherencerising/christian-mystical-lofi" target="_blank" rel="noopener" aria-label="Visit album Christian Mystical LoFi">
             <svg class="arrow" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M12 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
             Visit
           </a>
@@ -246,7 +251,7 @@
           </div>
         </div>
         <div class="actions">
-          <a class="link-btn" href="https://paypal.me/LiviaLay" aria-label="Visit PayPal support link">
+          <a class="link-btn" href="https://paypal.me/LiviaLay" target="_blank" rel="noopener" aria-label="Visit PayPal support link">
             <svg class="arrow" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M12 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
             Visit
           </a>
@@ -269,7 +274,7 @@
           </div>
         </div>
         <div class="actions">
-          <a class="link-btn" href="https://www.coherencerising.com/feedback/index.html" aria-label="Visit Feedback page">
+          <a class="link-btn" href="https://www.coherencerising.com/feedback/index.html" target="_blank" rel="noopener" aria-label="Visit Feedback page">
             <svg class="arrow" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M12 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
             Visit
           </a>
@@ -292,7 +297,7 @@
           </div>
         </div>
         <div class="actions">
-          <a class="link-btn" href="#" aria-label="Future Events (coming soon)" onclick="event.preventDefault(); alert('Events page coming soon!');">
+          <a class="link-btn" href="#" target="_blank" rel="noopener" aria-label="Future Events (coming soon)" onclick="event.preventDefault(); alert('Events page coming soon!');">
             <svg class="arrow" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M12 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
             Visit
           </a>
@@ -349,15 +354,28 @@
       if(box){box.innerHTML=`${pick.text} <span class="ref">${pick.ref}</span>`}
     })();
 
-    // Copy link buttons + toast
+    // Copy link buttons + toast + inline tooltip
     (function(){
       const toast=$id('toast');
       function showToast(msg){toast.textContent=msg;toast.hidden=false;requestAnimationFrame(()=>toast.classList.add('show'));setTimeout(()=>{toast.classList.remove('show');setTimeout(()=>toast.hidden=true,200)},1400)}
       async function copyText(txt){
-        try{await navigator.clipboard.writeText(txt);showToast('Link copied')}
-        catch(err){const el=document.createElement('textarea');el.value=txt;document.body.appendChild(el);el.select();try{document.execCommand('copy');showToast('Link copied')}catch(e){showToast('Could not copy')}document.body.removeChild(el)}
+        try{await navigator.clipboard.writeText(txt);return true}
+        catch(err){
+          const el=document.createElement('textarea');el.value=txt;document.body.appendChild(el);el.select();
+          try{document.execCommand('copy');return true}catch(e){return false}
+          finally{document.body.removeChild(el)}
+        }
       }
-      document.addEventListener('click',(e)=>{const btn=e.target.closest('.copy-btn');if(!btn)return;e.preventDefault();const url=btn.getAttribute('data-url');if(url)copyText(url)});
+      document.addEventListener('click',async (e)=>{
+        const btn=e.target.closest('.copy-btn'); if(!btn) return;
+        e.preventDefault(); const url=btn.getAttribute('data-url'); if(!url) return;
+        const ok=await copyText(url);
+        // tooltip near the button
+        btn.classList.add('copied'); btn.setAttribute('data-tip', ok? 'Copied!' : 'Couldn\'t copy');
+        setTimeout(()=>btn.classList.remove('copied'), 1200);
+        // toast as well
+        showToast(ok? 'Link copied' : 'Could not copy');
+      });
     })();
 
     // Footer year
