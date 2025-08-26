@@ -25,7 +25,6 @@
   <link rel="apple-touch-icon" href="/assets/CoherenceRising_Logo_512x512.png" />
 
   <style>
-    /* =================== THEME TOKENS (mobile-first) =================== */
     :root{
       --soft-gold:#F5E6A1; --olive-green:#6FAF8A; --bg:#FAF8F3; --panel:#FFFFFF; --text:#2A2F2F; --muted:#4D5A5A; --border:#E9E4DA; --accent:var(--olive-green);
       --ring:rgba(163,177,138,.55); --radius:16px;
@@ -34,14 +33,13 @@
       --bg:#0F1414; --panel:#171D1D; --text:#F6F6F2; --muted:#B7C1C1; --border:#2A3232; --accent:#6FAF8A; --divider-strong:#3C4949;
     }
 
-    /* =================== BASE =================== */
     *{box-sizing:border-box}
     html,body{height:100%}
     body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,"Apple Color Emoji","Segoe UI Emoji"}
     a{color:inherit}
     .container{max-width:860px;margin:0 auto;padding:12px}
 
-    /* =================== HEADER =================== */
+    /* HEADER */
     header.site{
       display:flex; flex-direction:column; align-items:center; text-align:center;
       background:var(--panel); border:1px solid var(--border); border-radius:22px; padding:20px; margin:12px 0 16px;
@@ -52,60 +50,57 @@
     .brand h1{margin:0;font-size:2rem;line-height:1.2}
     .brand .byline{color:var(--muted);margin-top:6px;font-size:1.05rem;line-height:1.4;max-width:32ch}
 
-    .theme-wrap{margin-top:8px;padding:8px;border-radius:14px;border:1px solid var(--border);background:var(--panel);display:flex;align-items:center;gap:.65rem}
-    .theme-wrap .label{display:none}
+    .theme-wrap{margin-top:16px;padding:8px;border-radius:14px;border:1px solid var(--border);background:var(--panel);display:flex;align-items:center;gap:.65rem}
     .switch{position:relative;width:52px;height:28px;border-radius:999px;background:var(--panel);border:1px solid var(--border);cursor:pointer}
     .knob{position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:var(--soft-gold);transition:left .18s ease}
     html[data-theme="dark"] .knob{left:27px;background:var(--olive-green)}
 
-    /* Divider line below header */
     header.site::after{content:"";display:block;width:100%;height:1px;background:var(--border);margin-top:16px}
     html[data-theme="dark"] header.site::after{background:linear-gradient(to right, transparent, var(--divider-strong), transparent)}
 
-    /* =================== INTRO =================== */
-    .intro{background:var(--panel);border:1px solid var(--border);border-radius:18px;padding:16px;margin:10px 0 18px;text-align:center;color:var(--text);box-shadow:0 8px 24px rgba(0,0,0,.06)}
+    /* INTRO */
+    .card.intro{text-align:center;font-weight:600}
 
-    /* =================== LINK CARDS =================== */
-    #links{display:grid;gap:10px}
-    .card{display:flex;align-items:center;gap:10px;padding:12px;border-radius:var(--radius);background:var(--panel);border:1px solid var(--border);box-shadow:0 8px 24px rgba(0,0,0,.06)}
+    /* CARDS */
+    #links{display:grid;gap:10px;margin-top:16px}
+    .card{display:flex;flex-direction:column;align-items:flex-start;gap:6px;padding:12px;border-radius:var(--radius);background:var(--panel);border:1px solid var(--border);box-shadow:0 8px 24px rgba(0,0,0,.06)}
     .card:hover{box-shadow:0 12px 32px rgba(0,0,0,.10);border-color:color-mix(in oklab, var(--accent), black 14%)}
+    .card .top{display:flex;align-items:center;gap:10px;width:100%}
     .icon{flex:0 0 42px;width:42px;height:42px;border-radius:12px;display:grid;place-items:center;border:1px solid var(--border);background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(0,0,0,.06))}
-    .meta{display:flex;flex-direction:column;gap:2px;min-width:0}
-    .title{font-weight:800;font-size:1rem}
-    .sub{color:var(--muted);font-size:.92rem;overflow:hidden;text-overflow:ellipsis}
-    .actions{margin-left:auto;display:flex;align-items:center;gap:8px}
-    .link-btn{display:inline-flex;align-items:center;gap:8px;text-decoration:none;color:var(--text);background:var(--panel);border:1px solid var(--border);border-radius:999px;padding:8px 12px}
-    .copy-btn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--border);background:var(--panel);padding:8px 10px;border-radius:999px;font-size:.92rem;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.06);transition:transform .12s ease,box-shadow .12s ease,background .12s ease}
-    .copy-btn:hover{transform:translateY(-1px);box-shadow:0 6px 14px rgba(0,0,0,.10)}
-    .copy-btn:focus-visible,.link-btn:focus-visible{outline:none;box-shadow:0 0 0 4px var(--ring)}
-    .chev{color:var(--accent)}
+    .icon svg{stroke-width:2.2;stroke:var(--accent)} /* Thicker, olive-green icons */
+    .meta{font-weight:700}
+    .sub{color:var(--muted);font-size:.9rem}
+    .actions{display:flex;gap:8px;margin-top:6px}
 
-    /* =================== FOOTER =================== */
+    .link-btn,.copy-btn{display:inline-flex;align-items:center;gap:6px;text-decoration:none;color:var(--text);background:var(--panel);border:1px solid var(--border);border-radius:999px;padding:8px 12px;font-size:.92rem;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.06);transition:transform .12s ease,box-shadow .12s ease,background .12s ease}
+    .link-btn:hover,.copy-btn:hover{transform:translateY(-1px);box-shadow:0 6px 14px rgba(0,0,0,.10);background:var(--accent);color:#fff}
+    .link-btn:focus-visible,.copy-btn:focus-visible{outline:none;box-shadow:0 0 0 4px var(--ring)}
+    .link-btn svg,.copy-btn svg{width:16px;height:16px;stroke:var(--accent)}
+    .link-btn:hover svg,.copy-btn:hover svg{stroke:#fff}
+    .link-btn .arrow{stroke:var(--accent);stroke-width:2.4}
+    .link-btn:hover .arrow{stroke:#fff}
+
+    /* FOOTER */
     footer.site{margin:20px 0 10px;text-align:center;color:var(--muted)}
     .verse{background:var(--panel);border:1px solid var(--border);border-radius:18px;padding:16px;margin-top:14px;box-shadow:0 8px 24px rgba(0,0,0,.06)}
     .verse .ref{display:block;margin-top:6px;font-size:.95rem;color:var(--muted)}
 
-    /* Toast */
     .toast{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:var(--panel);color:var(--text);border:1px solid var(--border);border-radius:999px;padding:10px 14px;box-shadow:0 10px 30px rgba(0,0,0,.18);opacity:0;pointer-events:none;transition:opacity .18s ease}
     .toast.show{opacity:1}
 
-    /* Larger screens */
     @media (min-width:640px){
       .container{padding:18px}
-      header.site{flex-direction:row;align-items:center;text-align:left}
-      .brand{flex-direction:row;align-items:center;gap:24px;margin-bottom:0}
+      header.site{flex-direction:column;align-items:center;text-align:center}
+      .brand{flex-direction:column;align-items:center;gap:12px;margin-bottom:12px}
       .brand img{width:130px;height:130px;border-radius:24px}
       .brand h1{font-size:2.2rem}
       .brand .byline{font-size:1.1rem;margin-top:8px}
-      .theme-wrap{margin-left:auto;margin-top:0}
-      .title{font-size:1.05rem}
-      .sub{font-size:.95rem}
+      .theme-wrap{margin-top:16px}
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <!-- =================== HEADER =================== -->
     <header class="site" aria-label="Header">
       <div class="brand">
         <img src="assets/CoherenceRising_Logo_512x512.png" alt="Coherence Rising logo" onerror="this.style.display='none'" />
@@ -115,144 +110,203 @@
         </div>
       </div>
       <div class="theme-wrap" role="group" aria-label="Theme toggle">
-        <span class="label">Theme</span>
         <span aria-hidden="true">Day</span>
         <button id="themeToggle" class="switch" type="button" aria-pressed="false" aria-label="Toggle dark mode"><span class="knob" aria-hidden="true"></span></button>
         <span aria-hidden="true">Night</span>
       </div>
     </header>
 
-    <!-- =================== INTRO =================== -->
-    <section class="intro" aria-label="Intro">
-      Welcome — I’m Liv. Explore Christ‑centered projects to support your spiritual growth.
-    </section>
+    <div class="card intro">Welcome — I’m Liv. Explore Christ-centered projects to support your spiritual growth.</div>
 
-    <!-- =================== LINKS =================== -->
     <nav id="links" aria-label="Main links (Linktree style)">
       <!-- About -->
       <div class="card" role="group" aria-label="About Coherence Rising">
-        <span class="icon" aria-hidden="true">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="var(--accent)" stroke-width="1.8"/><path d="M12 8h.01M12 11v5" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round"/></svg>
-        </span>
-        <span class="meta">
-          <span class="title">About Coherence Rising</span>
-          <span class="sub">Learn about the mission and the person behind it</span>
-        </span>
+        <div class="top">
+          <span class="icon" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M12 11v5" stroke-linecap="round"/></svg>
+          </span>
+          <div>
+            <div class="meta">About</div>
+            <div class="sub">Learn about Coherence Rising</div>
+          </div>
+        </div>
         <div class="actions">
-          <a class="link-btn" href="https://www.coherencerising.com/about/index.html" aria-label="Visit About page">Visit <span class="chev" aria-hidden="true">➜</span></a>
-          <button class="copy-btn" data-url="https://www.coherencerising.com/about/index.html" aria-label="Copy About link"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="9" y="9" width="11" height="11" rx="2" stroke="var(--accent)"/><rect x="4" y="4" width="11" height="11" rx="2" stroke="var(--accent)"/></svg>Copy</button>
+          <a class="link-btn" href="https://www.coherencerising.com/about/index.html" aria-label="Visit About page">
+            <svg class="arrow" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M12 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Visit
+          </a>
+          <button class="copy-btn" data-url="https://www.coherencerising.com/about/index.html" aria-label="Copy About link">
+            <svg viewBox="0 0 24 24" fill="none"><rect x="9" y="9" width="11" height="11" rx="2"/><rect x="4" y="4" width="11" height="11" rx="2"/></svg>
+            Copy
+          </button>
         </div>
       </div>
 
       <!-- Breath of Faith App -->
       <div class="card" role="group" aria-label="Breath of Faith App">
-        <span class="icon" aria-hidden="true">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="11" y="3" width="2" height="18" rx="1" fill="var(--accent)"/><rect x="3" y="11" width="18" height="2" rx="1" fill="var(--accent)"/></svg>
-        </span>
-        <span class="meta">
-          <span class="title">Breath of Faith App</span>
-          <span class="sub">Christian breathwork & focus tool</span>
-        </span>
+        <div class="top">
+          <span class="icon" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="11" y="3" width="2" height="18" rx="1"/><rect x="3" y="11" width="18" height="2" rx="1"/></svg>
+          </span>
+          <div>
+            <div class="meta">Breath of Faith App</div>
+            <div class="sub">Christian breathwork companion web-app</div>
+          </div>
+        </div>
         <div class="actions">
-          <a class="link-btn" href="https://www.coherencerising.com/app/index.html" aria-label="Visit Breath of Faith app">Visit <span class="chev" aria-hidden="true">➜</span></a>
-          <button class="copy-btn" data-url="https://www.coherencerising.com/app/index.html" aria-label="Copy Breath of Faith link"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="9" y="9" width="11" height="11" rx="2" stroke="var(--accent)"/><rect x="4" y="4" width="11" height="11" rx="2" stroke="var(--accent)"/></svg>Copy</button>
+          <a class="link-btn" href="https://www.coherencerising.com/app/index.html" aria-label="Visit Breath of Faith app">
+            <svg class="arrow" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M12 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Visit
+          </a>
+          <button class="copy-btn" data-url="https://www.coherencerising.com/app/index.html" aria-label="Copy Breath of Faith link">
+            <svg viewBox="0 0 24 24" fill="none"><rect x="9" y="9" width="11" height="11" rx="2"/><rect x="4" y="4" width="11" height="11" rx="2"/></svg>
+            Copy
+          </button>
         </div>
       </div>
 
       <!-- Insight Timer -->
       <div class="card" role="group" aria-label="Insight Timer Meditations">
-        <span class="icon" aria-hidden="true">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M6 15a6 6 0 1 1 12 0" stroke="var(--accent)" stroke-width="1.8"/><rect x="5.5" y="14" width="3.5" height="5" rx="1" fill="var(--accent)"/><rect x="15" y="14" width="3.5" height="5" rx="1" fill="var(--accent)"/></svg>
-        </span>
-        <span class="meta">
-          <span class="title">Insight Timer Meditations</span>
-          <span class="sub">Guided tracks to help you pray and rest</span>
-        </span>
+        <div class="top">
+          <span class="icon" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M6 15a6 6 0 1 1 12 0"/><rect x="5.5" y="14" width="3.5" height="5" rx="1"/><rect x="15" y="14" width="3.5" height="5" rx="1"/></svg>
+          </span>
+          <div>
+            <div class="meta">Insight Timer</div>
+            <div class="sub">Listen to my guided meditations</div>
+          </div>
+        </div>
         <div class="actions">
-          <a class="link-btn" href="https://www.coherencerising.com/insighttimer/index.html" aria-label="Visit Insight Timer page">Visit <span class="chev" aria-hidden="true">➜</span></a>
-          <button class="copy-btn" data-url="https://www.coherencerising.com/insighttimer/index.html" aria-label="Copy Insight Timer link"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="9" y="9" width="11" height="11" rx="2" stroke="var(--accent)"/><rect x="4" y="4" width="11" height="11" rx="2" stroke="var(--accent)"/></svg>Copy</button>
+          <a class="link-btn" href="https://www.coherencerising.com/insighttimer/index.html" aria-label="Visit Insight Timer page">
+            <svg class="arrow" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M12 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Visit
+          </a>
+          <button class="copy-btn" data-url="https://www.coherencerising.com/insighttimer/index.html" aria-label="Copy Insight Timer link">
+            <svg viewBox="0 0 24 24" fill="none"><rect x="9" y="9" width="11" height="11" rx="2"/><rect x="4" y="4" width="11" height="11" rx="2"/></svg>
+            Copy
+          </button>
         </div>
       </div>
 
       <!-- Album: The Mercy That Surrounds Me -->
       <div class="card" role="group" aria-label="Album: The Mercy That Surrounds Me">
-        <span class="icon" aria-hidden="true">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="11" y="5" width="2" height="12" fill="var(--accent)"/><rect x="13" y="5" width="6" height="2" fill="var(--accent)"/><circle cx="8" cy="17" r="2.6" stroke="var(--accent)" stroke-width="1.8"/><circle cx="16" cy="18" r="2" stroke="var(--accent)" stroke-width="1.8"/></svg>
-        </span>
-        <span class="meta">
-          <span class="title">Album: The Mercy That Surrounds Me</span>
-          <span class="sub">Ambient instrumental worship music for contemplative prayer</span>
-        </span>
+        <div class="top">
+          <span class="icon" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="11" y="5" width="2" height="12"/><rect x="13" y="5" width="6" height="2"/><circle cx="8" cy="17" r="2.6"/><circle cx="16" cy="18" r="2"/></svg>
+          </span>
+          <div>
+            <div class="meta">Album: The Mercy That Surrounds Me</div>
+            <div class="sub">Ambient instrumental worship music for contemplative prayer</div>
+          </div>
+        </div>
         <div class="actions">
-          <a class="link-btn" href="https://distrokid.com/hyperfollow/coherencerising/the-mercy-that-surrounds-me" aria-label="Visit album The Mercy That Surrounds Me">Visit <span class="chev" aria-hidden="true">➜</span></a>
-          <button class="copy-btn" data-url="https://distrokid.com/hyperfollow/coherencerising/the-mercy-that-surrounds-me" aria-label="Copy link for The Mercy That Surrounds Me"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="9" y="9" width="11" height="11" rx="2" stroke="var(--accent)"/><rect x="4" y="4" width="11" height="11" rx="2" stroke="var(--accent)"/></svg>Copy</button>
+          <a class="link-btn" href="https://distrokid.com/hyperfollow/coherencerising/the-mercy-that-surrounds-me" aria-label="Visit album The Mercy That Surrounds Me">
+            <svg class="arrow" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M12 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Visit
+          </a>
+          <button class="copy-btn" data-url="https://distrokid.com/hyperfollow/coherencerising/the-mercy-that-surrounds-me" aria-label="Copy link for The Mercy That Surrounds Me">
+            <svg viewBox="0 0 24 24" fill="none"><rect x="9" y="9" width="11" height="11" rx="2"/><rect x="4" y="4" width="11" height="11" rx="2"/></svg>
+            Copy
+          </button>
         </div>
       </div>
 
       <!-- Album: Christian Mystical LoFi -->
       <div class="card" role="group" aria-label="Album: Christian Mystical LoFi">
-        <span class="icon" aria-hidden="true">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 4l3 2h4v10a4 4 0 0 1-4 4H9a4 4 0 0 1-4-4V6h4l3-2Z" stroke="var(--accent)" stroke-width="1.8"/><path d="M10 10h4" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round"/></svg>
-        </span>
-        <span class="meta">
-          <span class="title">Album: Christian Mystical LoFi</span>
-          <span class="sub">LoFi inspired by Christian mystical chants for focus and productivity</span>
-        </span>
+        <div class="top">
+          <span class="icon" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 4l3 2h4v10a4 4 0 0 1-4 4H9a4 4 0 0 1-4-4V6h4l3-2Z"/><path d="M10 10h4" stroke-linecap="round"/></svg>
+          </span>
+          <div>
+            <div class="meta">Album: Christian Mystical LoFi</div>
+            <div class="sub">LoFi inspired by Christian mystical chants for focus and productivity</div>
+          </div>
+        </div>
         <div class="actions">
-          <a class="link-btn" href="https://distrokid.com/hyperfollow/coherencerising/christian-mystical-lofi" aria-label="Visit album Christian Mystical LoFi">Visit <span class="chev" aria-hidden="true">➜</span></a>
-          <button class="copy-btn" data-url="https://distrokid.com/hyperfollow/coherencerising/christian-mystical-lofi" aria-label="Copy link for Christian Mystical LoFi"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="9" y="9" width="11" height="11" rx="2" stroke="var(--accent)"/><rect x="4" y="4" width="11" height="11" rx="2" stroke="var(--accent)"/></svg>Copy</button>
+          <a class="link-btn" href="https://distrokid.com/hyperfollow/coherencerising/christian-mystical-lofi" aria-label="Visit album Christian Mystical LoFi">
+            <svg class="arrow" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M12 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Visit
+          </a>
+          <button class="copy-btn" data-url="https://distrokid.com/hyperfollow/coherencerising/christian-mystical-lofi" aria-label="Copy link for Christian Mystical LoFi">
+            <svg viewBox="0 0 24 24" fill="none"><rect x="9" y="9" width="11" height="11" rx="2"/><rect x="4" y="4" width="11" height="11" rx="2"/></svg>
+            Copy
+          </button>
         </div>
       </div>
 
       <!-- Support on PayPal -->
       <div class="card" role="group" aria-label="Support on PayPal">
-        <span class="icon" aria-hidden="true">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 20s-6-4.35-8.5-7.08C1.51 10.71 2.1 7.5 4.6 6.2A4.2 4.2 0 0 1 9.9 7.3L12 9.2l2.1-1.9a4.2 4.2 0 0 1 5.3-1.1c2.5 1.3 3.1 4.51 1.1 6.72C18 15.65 12 20 12 20Z" stroke="var(--accent)" stroke-width="1.6" fill="var(--accent)"/></svg>
-        </span>
-        <span class="meta">
-          <span class="title">Support on PayPal</span>
-          <span class="sub">Help sustain the mission</span>
-        </span>
+        <div class="top">
+          <span class="icon" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 20s-6-4.35-8.5-7.08C1.51 10.71 2.1 7.5 4.6 6.2A4.2 4.2 0 0 1 9.9 7.3L12 9.2l2.1-1.9a4.2 4.2 0 0 1 5.3-1.1c2.5 1.3 3.1 4.51 1.1 6.72C18 15.65 12 20 12 20Z" fill="none"/></svg>
+          </span>
+          <div>
+            <div class="meta">Support on PayPal</div>
+            <div class="sub">Donate to support Coherence Rising</div>
+          </div>
+        </div>
         <div class="actions">
-          <a class="link-btn" href="https://paypal.me/LiviaLay" aria-label="Visit PayPal support link">Visit <span class="chev" aria-hidden="true">➜</span></a>
-          <button class="copy-btn" data-url="https://paypal.me/LiviaLay" aria-label="Copy PayPal link"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="9" y="9" width="11" height="11" rx="2" stroke="var(--accent)"/><rect x="4" y="4" width="11" height="11" rx="2" stroke="var(--accent)"/></svg>Copy</button>
+          <a class="link-btn" href="https://paypal.me/LiviaLay" aria-label="Visit PayPal support link">
+            <svg class="arrow" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M12 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Visit
+          </a>
+          <button class="copy-btn" data-url="https://paypal.me/LiviaLay" aria-label="Copy PayPal link">
+            <svg viewBox="0 0 24 24" fill="none"><rect x="9" y="9" width="11" height="11" rx="2"/><rect x="4" y="4" width="11" height="11" rx="2"/></svg>
+            Copy
+          </button>
         </div>
       </div>
 
       <!-- Feedback (coming soon) -->
       <div class="card" role="group" aria-label="Feedback (coming soon)">
-        <span class="icon" aria-hidden="true">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="4" y="5" width="16" height="12" rx="3" stroke="var(--accent)" stroke-width="1.8"/><path d="M11 15l2 3" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round"/></svg>
-        </span>
-        <span class="meta">
-          <span class="title">Feedback (coming soon)</span>
-          <span class="sub">Share your thoughts & ideas</span>
-        </span>
+        <div class="top">
+          <span class="icon" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="4" y="5" width="16" height="12" rx="3"/><path d="M11 15l2 3" stroke-linecap="round"/></svg>
+          </span>
+          <div>
+            <div class="meta">Feedback</div>
+            <div class="sub">Share your thoughts (coming soon)</div>
+          </div>
+        </div>
         <div class="actions">
-          <a class="link-btn" href="https://www.coherencerising.com/feedback/index.html" aria-label="Visit Feedback page">Visit <span class="chev" aria-hidden="true">➜</span></a>
-          <button class="copy-btn" data-url="https://www.coherencerising.com/feedback/index.html" aria-label="Copy Feedback link"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="9" y="9" width="11" height="11" rx="2" stroke="var(--accent)"/><rect x="4" y="4" width="11" height="11" rx="2" stroke="var(--accent)"/></svg>Copy</button>
+          <a class="link-btn" href="https://www.coherencerising.com/feedback/index.html" aria-label="Visit Feedback page">
+            <svg class="arrow" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M12 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Visit
+          </a>
+          <button class="copy-btn" data-url="https://www.coherencerising.com/feedback/index.html" aria-label="Copy Feedback link">
+            <svg viewBox="0 0 24 24" fill="none"><rect x="9" y="9" width="11" height="11" rx="2"/><rect x="4" y="4" width="11" height="11" rx="2"/></svg>
+            Copy
+          </button>
         </div>
       </div>
 
       <!-- Future Events -->
       <div class="card" role="group" aria-label="Future Events">
-        <span class="icon" aria-hidden="true">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="4" y="6" width="16" height="12" rx="2" stroke="var(--accent)" stroke-width="1.8"/><path d="M4 10h16" stroke="var(--accent)" stroke-width="1.8"/><circle cx="9" cy="14" r="1.6" fill="var(--accent)"/><circle cx="15" cy="14" r="1.6" fill="var(--accent)"/></svg>
-        </span>
-        <span class="meta">
-          <span class="title">Future Events</span>
-          <span class="sub">Retreats & gatherings — stay tuned</span>
-        </span>
+        <div class="top">
+          <span class="icon" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="4" y="6" width="16" height="12" rx="2"/><path d="M4 10h16"/><circle cx="9" cy="14" r="1.6"/><circle cx="15" cy="14" r="1.6"/></svg>
+          </span>
+          <div>
+            <div class="meta">Future Events</div>
+            <div class="sub">Stay tuned for upcoming events</div>
+          </div>
+        </div>
         <div class="actions">
-          <a class="link-btn" href="#" aria-label="Future Events (coming soon)" onclick="event.preventDefault(); alert('Events page coming soon!');">Visit <span class="chev" aria-hidden="true">➜</span></a>
-          <button class="copy-btn" data-url="https://www.coherencerising.com/events/" aria-label="Copy Events link"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="9" y="9" width="11" height="11" rx="2" stroke="var(--accent)"/><rect x="4" y="4" width="11" height="11" rx="2" stroke="var(--accent)"/></svg>Copy</button>
+          <a class="link-btn" href="#" aria-label="Future Events (coming soon)" onclick="event.preventDefault(); alert('Events page coming soon!');">
+            <svg class="arrow" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M12 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Visit
+          </a>
+          <button class="copy-btn" data-url="https://www.coherencerising.com/events/" aria-label="Copy Events link">
+            <svg viewBox="0 0 24 24" fill="none"><rect x="9" y="9" width="11" height="11" rx="2"/><rect x="4" y="4" width="11" height="11" rx="2"/></svg>
+            Copy
+          </button>
         </div>
       </div>
     </nav>
 
-    <!-- =================== FOOTER =================== -->
+    <!-- Footer -->
     <footer class="site" aria-label="Footer">
-      <div class="verse" id="verseBox">Loading verse…</div>
+      <div class="verse card" id="verseBox">Loading verse…</div>
       <div style="margin-top:10px">© <span id="year"></span> Coherence Rising</div>
     </footer>
   </div>
@@ -260,11 +314,10 @@
   <div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true" hidden>Link copied</div>
 
   <script>
-    // ========= Small utilities =========
     const store={get:(k,f)=>{try{const v=localStorage.getItem(k);return v!==null?JSON.parse(v):f}catch{return f}},set:(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch{}}};
     const $id=(x)=>document.getElementById(x);
 
-    // ========= Theme toggle =========
+    // Theme toggle (persistent)
     (function(){
       const btn=$id('themeToggle');
       const apply=(m)=>{document.documentElement.setAttribute('data-theme',m);btn&&btn.setAttribute('aria-pressed',m==='dark'?'true':'false');store.set('cr_theme',m)};
@@ -275,7 +328,7 @@
       });
     })();
 
-    // ========= Scripture rotation (on visit/refresh) =========
+    // Scripture rotation (on visit/refresh) — expanded list
     (function(){
       const verses=[
         {ref:'Psalm 46:10 (KJV)', text:'“Be still, and know that I am God.”'},
@@ -296,7 +349,7 @@
       if(box){box.innerHTML=`${pick.text} <span class="ref">${pick.ref}</span>`}
     })();
 
-    // ========= Copy link buttons =========
+    // Copy link buttons + toast
     (function(){
       const toast=$id('toast');
       function showToast(msg){toast.textContent=msg;toast.hidden=false;requestAnimationFrame(()=>toast.classList.add('show'));setTimeout(()=>{toast.classList.remove('show');setTimeout(()=>toast.hidden=true,200)},1400)}
@@ -307,7 +360,7 @@
       document.addEventListener('click',(e)=>{const btn=e.target.closest('.copy-btn');if(!btn)return;e.preventDefault();const url=btn.getAttribute('data-url');if(url)copyText(url)});
     })();
 
-    // ========= Footer year =========
+    // Footer year
     $id('year').textContent=new Date().getFullYear();
   </script>
 </body>
