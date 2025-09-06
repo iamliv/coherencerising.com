@@ -1,1 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Insight Timer • Coherence Rising</title>
+  <meta name="description" content="Explore Liv Lay’s Insight Timer profile. Guided meditations and mindfulness practices by Coherence Rising." />
+  <meta property="og:title" content="Insight Timer • Coherence Rising" />
+  <meta property="og:description" content="Guided meditations and mindfulness practices by Liv Lay on Insight Timer." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://www.coherencerising.com/insighttimer/" />
+  <!-- If you have a social share image, update the path below -->
+  <meta property="og:image" content="https://www.coherencerising.com/assets/social-share.jpg" />
+
+  <style>
+    /* =========================
+       COHERENCE RISING THEME
+       ========================= */
+    :root {
+      /* Day (light) theme */
+      --bg: #FAF8F3;
+      --panel: #FFFFFF;
+      --text: #2A2F2F;
+      --text-muted: #4D5A5A;
+      --border: #E9E4DA;
+      --accent: #6FAF8A;
+      --accent-contrast: #121512;
+      --cue: #1F3A78; /* breathwork cue color */
+      --ring: rgba(163,177,138,0.55);
+
+      /* Supporting palette */
+      --soft-gold: #F5E6A1;
+      --dusty-lavender: #C8BFE7;
+      --olive: #6FAF8A; /* same as accent */
+      --warm-taupe: #D8CFC4;
+      --sky-blue: #6EA8FF;
+      --slate-gray: #7D8C8C;
+      --ivory: #FDF6EC;
+
+      /* Details / gradients present across brand visuals */
+      --tint-1: #D1B97A;
+      --tint-2: #567BAB;
+      --cross-1: #7B6A3A;
+      --cross-2: #CBA95F;
+      --cross-3: #6C5A2A;
+      --cross-4: #5D4F2B;
+      --hi-contrast-on-gold-1: #1B160A;
+      --hi-contrast-on-gold-2: #1A1A1A;
+
+      /* Utility */
+      --radius-xl: 16px;
+      --radius-2xl: 20px;
+      --shadow-soft: 0 6px 24px rgba(0,0,0,0.06);
+      --shadow-hover: 0 10px 28px rgba(0,0,0,0.08);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        /* Night (dark) theme */
+        --bg: #0F1414;
+        --panel: #171D1D;
+        --text: #F6F6F2;
+        --text-muted: #B7C1C1;
+        --border: #2A3232;
+        --accent: #6FAF8A; /* same as day */
+        --accent-contrast: #121512;
+        --cue: #FFFFFF; /* with strong black glow applied where relevant */
+        --ring: rgba(163,177,138,0.55);
+
+        --shadow-soft: 0 6px 24px rgba(0,0,0,0.35);
+        --shadow-hover: 0 10px 28px rgba(0,0,0,0.45);
+      }
+    }
+
+    /* Base */
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    img { display: block; max-width: 100%; height: auto; }
+
+    /* Header */
+    .header {
+      position: sticky; top: 0; z-index: 10;
+      background: color-mix(in oklab, var(--bg) 92%, white 8%);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(6px);
+    }
+    .header-inner {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 12px 16px;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .brand {
+      display: inline-flex; align-items: center; gap: 10px;
+      border-radius: 10px;
+      outline: none;
+    }
+    .brand:focus-visible { box-shadow: 0 0 0 6px var(--ring); }
+    .brand-logo {
+      width: 36px; height: 36px; border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      background: var(--panel);
+      border: 1px solid var(--border);
+      padding: 4px;
+    }
+    .brand-title {
+      font-size: 16px; font-weight: 600; letter-spacing: 0.2px;
+    }
+
+    /* Main card */
+    .container {
+      max-width: 960px;
+      margin: 32px auto 64px;
+      padding: 0 16px;
+    }
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-2xl);
+      box-shadow: var(--shadow-soft);
+      transition: box-shadow .25s ease;
+    }
+    .card:hover { box-shadow: var(--shadow-hover); }
+    .card-header {
+      padding: 18px 20px 0;
+    }
+    .card-title {
+      font-size: 20px; font-weight: 650; margin: 0 0 6px 0;
+    }
+    .card-subtitle {
+      margin: 0 0 12px 0; color: var(--text-muted); font-size: 14px;
+    }
+    .card-body { padding: 0 20px 20px; }
+
+    /* Embed wrapper: ensures rounded corners + focus ring */
+    .embed-wrap {
+      border-radius: var(--radius-xl);
+      overflow: clip;
+      border: 1px solid var(--border);
+      box-shadow: 0 0 0 0 var(--ring);
+      transition: box-shadow .2s ease;
+    }
+    .embed-wrap:focus-within { box-shadow: 0 0 0 8px var(--ring); }
+
+    .embed-fallback {
+      padding: 12px 14px;
+      background: color-mix(in oklab, var(--panel) 86%, var(--soft-gold) 14%);
+      border-top: 1px dashed var(--border);
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+    .embed-fallback a {
+      color: var(--text);
+      text-decoration: underline;
+      text-decoration-color: var(--accent);
+      text-underline-offset: 3px;
+    }
+
+    /* Footer */
+    footer {
+      opacity: .85;
+      color: var(--text-muted);
+      font-size: 12px;
+      text-align: center;
+      padding: 24px 16px 48px;
+    }
+
+    /* High-contrast cue text example (not used in copy) */
+    .cue-strong-black-glow { text-shadow: 0 0 8px rgba(0,0,0,0.95); }
+
+    /* Reduce motion preference */
+    @media (prefers-reduced-motion: reduce) {
+      * { transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header (minimal): logo + page title; logo links back to homepage -->
+  <header class="header" role="banner">
+    <div class="header-inner">
+      <a class="brand" href="https://www.coherencerising.com" aria-label="Go to Coherence Rising homepage">
+        <!--
+          Update the src below to your actual logo location in your repo.
+          Example suggestions:
+            ./assets/CoherenceRising_Logo_512x512.png
+          If you keep this file beside index.html, you can use: ./CoherenceRising_Logo.png
+        -->
+        <img class="brand-logo" src="./assets/CoherenceRising_Logo_512x512.png" alt="Coherence Rising logo" />
+        <span class="brand-title">Insight Timer</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- Main content -->
+  <main class="container" id="main" role="main">
+    <article class="card" aria-labelledby="insight-title">
+      <div class="card-header">
+        <h1 id="insight-title" class="card-title">Liv Lay on Insight Timer</h1>
+        <p class="card-subtitle">Guided meditations and mindfulness practices.</p>
+      </div>
+      <div class="card-body">
+        <div class="embed-wrap" tabindex="-1">
+          <!-- === Insight Timer EMBED START === -->
+          <!-- Paste/update your embed code inside this wrapper. -->
+          <iframe style="border-radius:16px" width="100%" height="455px" title="Insight Timer Embed: Liv Lay" frameborder="0" allowfullscreen allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy" src="https://widgets.insighttimer.com/publisher/etVSVNYhgzgFR5URB86oLtcGZx73?created_at=1757187996&cid=etVSVNYhgzgFR5URB86oLtcGZx73"></iframe>
+          <!-- === Insight Timer EMBED END === -->
+          <div class="embed-fallback">
+            Having trouble viewing the embed? Open it directly on Insight Timer:
+            <a href="https://insighttimer.com/" target="_blank" rel="noopener">View profile</a>.
+          </div>
+        </div>
+      </div>
+    </article>
+  </main>
+
+  <footer>
+    © <span id="y"></span> Coherence Rising. All rights reserved.
+  </footer>
+
+  <noscript>This page works best with JavaScript enabled.</noscript>
+
+  <script>
+    // Simple year update for footer
+    document.getElementById('y').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
 
