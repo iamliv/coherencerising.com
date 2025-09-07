@@ -14,13 +14,12 @@
   <style>
     :root {
       --bg: #FAF8F3; --panel: #FFFFFF; --text: #2A2F2F; --text-muted: #4D5A5A; --border: #E9E4DA;
-      --accent: #6FAF8A; --accent-contrast: #121512; --cue: #1F3A78;
-      --ring: rgba(163,177,138,0.55);
+      --accent: #6FAF8A; --accent-contrast: #121512; --ring: rgba(163,177,138,0.55);
     }
     @media (prefers-color-scheme: dark) {
       :root {
         --bg: #0F1414; --panel: #171D1D; --text: #F6F6F2; --text-muted: #B7C1C1; --border: #2A3232;
-        --accent: #6FAF8A; --accent-contrast: #121512; --cue: #FFFFFF;
+        --accent: #6FAF8A; --accent-contrast: #121512;
       }
     }
     body {
@@ -29,23 +28,30 @@
     }
     a { color: inherit; text-decoration: none; }
 
+    /* Header */
     .header {
       background: var(--panel); border-bottom:1px solid var(--border);
       position:sticky; top:0; z-index:10;
     }
     .header-inner {
       max-width:1000px; margin:0 auto; padding:16px;
-      display:flex; align-items:center; gap:14px;
+      display:flex; align-items:center; gap:16px;
     }
     .brand-logo {
       width:56px; height:56px; border-radius:12px;
       border:1px solid var(--border); background:var(--panel);
       padding:4px; object-fit:contain;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+    .brand-logo:hover {
+      transform: scale(1.08);
+      box-shadow: 0 0 12px var(--accent);
     }
     .brand-title {
       font-size:22px; font-weight:700;
     }
 
+    /* Main content */
     .container { max-width:960px; margin:32px auto; padding:0 16px; }
     .card {
       background:var(--panel); border:1px solid var(--border); border-radius:20px;
@@ -66,7 +72,7 @@
   <header class="header">
     <div class="header-inner">
       <a href="https://www.coherencerising.com" aria-label="Go to Coherence Rising homepage">
-        <img class="brand-logo" src="./assets/CoherenceRising_Logo_512x512.png" alt="Coherence Rising logo" />
+        <img class="brand-logo" src="../assets/CoherenceRising_Logo_512x512.png" alt="Coherence Rising logo" />
       </a>
       <span class="brand-title">Insight Timer Teacher Profile and Tracks</span>
     </div>
