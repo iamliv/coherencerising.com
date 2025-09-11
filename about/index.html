@@ -8,7 +8,7 @@
   <meta name="theme-color" content="#0F1414" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <style>
-    /* ========= Brand palette (aligned with your app) ========= */
+    /* ========= Brand palette ========= */
     :root{
       --soft-gold:#F5E6A1; --dusty-lavender:#C8BFE7; --olive-green:#6FAF8A; --warm-taupe:#D8CFC4;
       --sky-blue:#6EA8FF; --slate-gray:#7D8C8C; --ivory-white:#FDF6EC;
@@ -35,24 +35,27 @@
       display:flex;align-items:center;gap:16px;text-decoration:none;color:inherit;
     }
     .brand img{
-      width:clamp(64px, 20vw, 168px); /* responsive: min 64px, max 168px */
+      width:clamp(64px, 20vw, 168px); /* responsive scaling */
       height:clamp(64px, 20vw, 168px);
       border-radius:16px;border:1px solid var(--border);object-fit:cover;
       box-shadow:0 6px 18px rgba(0,0,0,.08); background:#fff;
     }
-    .brand-title{
-      display:flex;flex-direction:column;
-    }
+    .brand-title{display:flex;flex-direction:column;text-align:left}
     .brand-title h1{margin:0;font-size:clamp(1.8rem,6.2vw,2.4rem);letter-spacing:.2px}
+
+    /* Center logo/title on small screens */
+    @media (max-width: 600px){
+      header.app{justify-content:center;text-align:center}
+      .brand{flex-direction:column}
+      .brand-title{text-align:center}
+    }
 
     /* ========= Hero band ========= */
     .hero{
       background:var(--panel);border:1px solid var(--border);border-radius:20px;
       padding:18px;box-shadow:0 8px 28px rgba(0,0,0,.08);
     }
-    .hero h2{
-      margin:0 0 4px;font-size:clamp(1.2rem,3.6vw,1.5rem)
-    }
+    .hero h2{margin:0 0 4px;font-size:clamp(1.2rem,3.6vw,1.5rem)}
     .hero .sub{color:var(--muted);font-size:clamp(1rem,3.2vw,1.1rem)}
 
     /* ========= Back link ========= */
@@ -89,7 +92,6 @@
   <div class="container">
     <!-- ========= Header ========= -->
     <header class="app" aria-label="Site header">
-      <!-- About page lives in /about, so go up one folder to reach /assets -->
       <a class="brand" href="https://www.coherencerising.com" aria-label="Go to Coherence Rising home">
         <img src="../assets/CoherenceRising_Logo_512x512.png" alt="Coherence Rising logo" />
         <span class="brand-title">
