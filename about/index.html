@@ -42,7 +42,6 @@
       display:flex;flex-direction:column;
     }
     .brand-title h1{margin:0;font-size:clamp(1.8rem,6.2vw,2.4rem);letter-spacing:.2px}
-    .byline{color:var(--muted);font-size:clamp(1rem,3.2vw,1.1rem)}
 
     /* ========= Hero band ========= */
     .hero{
@@ -53,6 +52,16 @@
       margin:0 0 4px;font-size:clamp(1.2rem,3.6vw,1.5rem)
     }
     .hero .sub{color:var(--muted);font-size:clamp(1rem,3.2vw,1.1rem)}
+
+    /* ========= Back link ========= */
+    .back-link{
+      display:inline-flex;align-items:center;gap:.4rem;
+      margin:14px 0 0;text-decoration:none;font-weight:600;
+      color:var(--accent);
+      border-bottom:1.5px solid transparent;padding-bottom:2px;
+    }
+    .back-link:hover{border-color:var(--accent)}
+    .back-link svg{width:16px;height:16px;flex-shrink:0}
 
     /* ========= Content ========= */
     main{margin-top:12px}
@@ -78,13 +87,11 @@
   <div class="container">
     <!-- ========= Header ========= -->
     <header class="app" aria-label="Site header">
-      <!-- Make sure the logo file exists next to this HTML file.
-           If your filename is different, update the src below. -->
+      <!-- About page lives in /about, so go up one folder to reach /assets -->
       <a class="brand" href="https://www.coherencerising.com" aria-label="Go to Coherence Rising home">
-        <img src="CoherenceRising_Logo_512x512.png" alt="Coherence Rising logo" />
+        <img src="../assets/CoherenceRising_Logo_512x512.png" alt="Coherence Rising logo" />
         <span class="brand-title">
           <h1>Coherence Rising</h1>
-          <span class="byline">About</span>
         </span>
       </a>
     </header>
@@ -94,6 +101,12 @@
       <h2 id="about-hero-title">About Coherence Rising</h2>
       <p class="sub">A personal mission to live—and help others live—in coherent alignment with God-centered values.</p>
     </section>
+
+    <!-- ========= Back link ========= -->
+    <a href="https://www.coherencerising.com" class="back-link" aria-label="Back to Home">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
+      Back to Home
+    </a>
 
     <!-- ========= Content ========= -->
     <main id="content" aria-label="About content">
