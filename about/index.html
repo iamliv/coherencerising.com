@@ -1,1 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>About — Coherence Rising</title>
+  <meta name="description" content="About Coherence Rising — a Christian mission focused on breathwork, focus tools, and music to help believers live coherently with God-centered values." />
+  <meta name="theme-color" content="#0F1414" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <style>
+    /* ========= Brand palette (aligned with your app) ========= */
+    :root{
+      --soft-gold:#F5E6A1; --dusty-lavender:#C8BFE7; --olive-green:#6FAF8A; --warm-taupe:#D8CFC4;
+      --sky-blue:#6EA8FF; --slate-gray:#7D8C8C; --ivory-white:#FDF6EC;
+      --bg:#FAF8F3; --panel:#FFFFFF; --text:#2A2F2F; --muted:#4D5A5A; --border:#E9E4DA;
+      --ring:rgba(163,177,138,.55); --accent:var(--olive-green); --accent-contrast:#121512;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;background:var(--bg);color:var(--text);
+      font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Arial,"Apple Color Emoji","Segoe UI Emoji";
+      line-height:1.6;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
+    }
+    a{color:inherit}
+    .container{max-width:900px;margin:0 auto;padding:16px}
+
+    /* ========= Header ========= */
+    header.app{
+      display:flex;align-items:center;justify-content:space-between;gap:12px;margin:10px 0 14px;
+      flex-wrap:wrap;
+    }
+    .brand{
+      display:flex;align-items:center;gap:12px;text-decoration:none;color:inherit;
+    }
+    .brand img{
+      width:56px;height:56px;border-radius:12px;border:1px solid var(--border);object-fit:cover;
+      box-shadow:0 6px 18px rgba(0,0,0,.08); background:#fff;
+    }
+    .brand-title{
+      display:flex;flex-direction:column;
+    }
+    .brand-title h1{margin:0;font-size:clamp(1.8rem,6.2vw,2.4rem);letter-spacing:.2px}
+    .byline{color:var(--muted);font-size:clamp(1rem,3.2vw,1.1rem)}
+
+    /* ========= Hero band ========= */
+    .hero{
+      background:var(--panel);border:1px solid var(--border);border-radius:20px;
+      padding:18px;box-shadow:0 8px 28px rgba(0,0,0,.08);
+    }
+    .hero h2{
+      margin:0 0 4px;font-size:clamp(1.2rem,3.6vw,1.5rem)
+    }
+    .hero .sub{color:var(--muted);font-size:clamp(1rem,3.2vw,1.1rem)}
+
+    /* ========= Content ========= */
+    main{margin-top:12px}
+    .prose{
+      background:var(--panel);border:1px solid var(--border);border-radius:20px;
+      padding:18px;box-shadow:0 8px 28px rgba(0,0,0,.08)
+    }
+    .prose p{margin:0 0 12px}
+    .prose p:last-child{margin-bottom:0}
+
+    /* ========= Footer ========= */
+    footer.app{text-align:center;color:var(--muted);margin:18px 0 26px}
+    .brand-link{color:inherit;text-decoration:none;border-bottom:1px solid transparent;padding-bottom:1px}
+    .brand-link:hover{border-color:color-mix(in oklab, var(--olive-green), white 30%)}
+
+    /* ========= Focus states ========= */
+    a:focus-visible, button:focus-visible{
+      outline:none;box-shadow:0 0 0 4px var(--ring);border-radius:10px
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- ========= Header ========= -->
+    <header class="app" aria-label="Site header">
+      <!-- Make sure the logo file exists next to this HTML file.
+           If your filename is different, update the src below. -->
+      <a class="brand" href="https://www.coherencerising.com" aria-label="Go to Coherence Rising home">
+        <img src="CoherenceRising_Logo_512x512.png" alt="Coherence Rising logo" />
+        <span class="brand-title">
+          <h1>Coherence Rising</h1>
+          <span class="byline">About</span>
+        </span>
+      </a>
+    </header>
+
+    <!-- ========= Hero ========= -->
+    <section class="hero" aria-labelledby="about-hero-title">
+      <h2 id="about-hero-title">About Coherence Rising</h2>
+      <p class="sub">A personal mission to live—and help others live—in coherent alignment with God-centered values.</p>
+    </section>
+
+    <!-- ========= Content ========= -->
+    <main id="content" aria-label="About content">
+      <article class="prose">
+        <p>I’m a new mom, living in Markham with my partner and our baby, and I also work full-time remotely for a software company. Born and raised in the Greater Toronto Area, I’ve always carried a deep appreciation for community, growth, and creating spaces where people feel supported.</p>
+
+        <p>For nearly twenty years I’ve been dedicated to inner work—through meditation, breathwork, and women’s coaching communities. More recently, my life took a beautiful turn as I became a Christian. That step of faith has reshaped the way I view personal transformation: healing is not only emotional and physical, but also deeply spiritual.</p>
+
+        <p>My mission now is to help others along their own Christian discipleship journeys. I believe that true wholeness comes when we care for the body somatically through practices like breathwork and meditation, while also sharpening and focusing the mind through prayer and living in alignment with God-centered values.</p>
+
+        <p>That’s why I created <strong>Coherence Rising</strong>. The name reflects my vision: that by living more coherently—our actions, values, and faith in harmony—we rise into deeper peace, clarity, and purpose. Through tools like breathwork, focus practices, and music, I hope to equip others to draw closer to God and to live out their faith with both intention and joy.</p>
+      </article>
+    </main>
+
+    <!-- ========= Footer ========= -->
+    <footer class="app" aria-label="Footer">
+      <div>© <span id="year"></span> <a class="brand-link" href="https://www.coherencerising.com">Coherence Rising</a></div>
+    </footer>
+  </div>
+
+  <script>
+    // Set current year in the footer
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
 
