@@ -28,14 +28,16 @@
 
     /* ========= Header ========= */
     header.app{
-      display:flex;align-items:center;justify-content:space-between;gap:12px;margin:10px 0 14px;
+      display:flex;align-items:center;justify-content:space-between;gap:16px;margin:10px 0 14px;
       flex-wrap:wrap;
     }
     .brand{
-      display:flex;align-items:center;gap:12px;text-decoration:none;color:inherit;
+      display:flex;align-items:center;gap:16px;text-decoration:none;color:inherit;
     }
     .brand img{
-      width:56px;height:56px;border-radius:12px;border:1px solid var(--border);object-fit:cover;
+      width:clamp(64px, 20vw, 168px); /* responsive: min 64px, max 168px */
+      height:clamp(64px, 20vw, 168px);
+      border-radius:16px;border:1px solid var(--border);object-fit:cover;
       box-shadow:0 6px 18px rgba(0,0,0,.08); background:#fff;
     }
     .brand-title{
@@ -133,4 +135,3 @@
   </script>
 </body>
 </html>
-
