@@ -168,6 +168,48 @@
       color:var(--muted) !important;
     }
 
+    /* Fallback styling for Kit embeds that don't use .formkit-* (some use older/separate classnames) */
+.kit-wrap form { width:100% !important; }
+
+.kit-wrap input[type="email"],
+.kit-wrap input[type="text"]{
+  display:block !important;
+  width:100% !important;
+  max-width:100% !important;
+  padding:10px 12px !important;
+  border-radius:999px !important;
+  border:1px solid var(--border) !important;
+  background:var(--panel) !important;
+  color:var(--text) !important;
+  outline:none !important;
+  box-sizing:border-box !important;
+}
+
+.kit-wrap input[type="email"]::placeholder,
+.kit-wrap input[type="text"]::placeholder{
+  color:var(--muted) !important;
+}
+
+.kit-wrap button,
+.kit-wrap input[type="submit"]{
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  padding:10px 14px !important;
+  border-radius:999px !important;
+  border:1px solid var(--border) !important;
+  background:var(--accent-fill) !important;
+  color:var(--on-accent) !important;
+  cursor:pointer !important;
+  box-shadow:0 2px 6px rgba(0,0,0,.06) !important;
+}
+
+.kit-wrap button:hover,
+.kit-wrap input[type="submit"]:hover{
+  box-shadow:0 6px 14px rgba(0,0,0,.10) !important;
+  transform:translateY(-1px) !important;
+}
+    
     @media (min-width:640px){
       .container{padding:18px}
       header.site{flex-direction:column;align-items:center;text-align:center}
