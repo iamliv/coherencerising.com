@@ -39,6 +39,89 @@
     a{color:inherit}
     .container{max-width:900px;margin:0 auto;padding:16px}
 
+        /* Kit (ConvertKit) inline form styling (will apply once you paste their embed) */
+    .kit-wrap{width:100%; margin-top:10px}
+    .kit-note{margin-top:8px; font-size:.9rem; color:var(--muted)}
+
+    /* Common Kit form classes */
+    .formkit-form{width:100% !important}
+    .formkit-fields{display:flex !important; flex-wrap:wrap; gap:8px; width:100%}
+    .formkit-field{flex:1 1 220px}
+    .formkit-input{
+      width:100% !important;
+      padding:10px 12px !important;
+      border-radius:999px !important;
+      border:1px solid var(--border) !important;
+      background:var(--panel) !important;
+      color:var(--text) !important;
+      outline:none !important;
+    }
+    .formkit-input:focus{
+      box-shadow:0 0 0 4px var(--ring) !important;
+    }
+
+    .formkit-submit{
+      padding:10px 14px !important;
+      border-radius:999px !important;
+      border:1px solid var(--border) !important;
+      background:var(--accent-fill) !important;
+      color:var(--on-accent) !important;
+      cursor:pointer !important;
+      box-shadow:0 2px 6px rgba(0,0,0,.06) !important;
+      transition:transform .12s ease, box-shadow .12s ease !important;
+    }
+    .formkit-submit:hover{
+      box-shadow:0 6px 14px rgba(0,0,0,.10) !important;
+      transform:translateY(-1px) !important;
+    }
+
+    .formkit-guarantee,
+    .formkit-powered-by-convertkit{
+      color:var(--muted) !important;
+    }
+
+    /* Fallback styling for Kit embeds that don't use .formkit-* (some use older/separate classnames) */
+.kit-wrap form { width:100% !important; }
+
+.kit-wrap input[type="email"],
+.kit-wrap input[type="text"]{
+  display:block !important;
+  width:100% !important;
+  max-width:100% !important;
+  padding:10px 12px !important;
+  border-radius:999px !important;
+  border:1px solid var(--border) !important;
+  background:var(--panel) !important;
+  color:var(--text) !important;
+  outline:none !important;
+  box-sizing:border-box !important;
+}
+
+.kit-wrap input[type="email"]::placeholder,
+.kit-wrap input[type="text"]::placeholder{
+  color:var(--muted) !important;
+}
+
+.kit-wrap button,
+.kit-wrap input[type="submit"]{
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  padding:10px 14px !important;
+  border-radius:999px !important;
+  border:1px solid var(--border) !important;
+  background:var(--accent-fill) !important;
+  color:var(--on-accent) !important;
+  cursor:pointer !important;
+  box-shadow:0 2px 6px rgba(0,0,0,.06) !important;
+}
+
+.kit-wrap button:hover,
+.kit-wrap input[type="submit"]:hover{
+  box-shadow:0 6px 14px rgba(0,0,0,.10) !important;
+  transform:translateY(-1px) !important;
+}
+
     /* Header */
     header.app{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;margin:8px 0 12px}
     .title-wrap h1{margin:0;font-size:clamp(2.35rem,7vw,3.35rem)}
